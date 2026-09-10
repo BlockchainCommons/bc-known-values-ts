@@ -69,3 +69,12 @@ describe("global registry", () => {
     expect(resolveKnownValue(1, new KnownValuesStore()).name).toBe("1");
   });
 });
+
+describe("unit value name", () => {
+  it("the registry names codepoint 0 with the empty string, not '0'", () => {
+    const store = getGlobalKnownValuesStore();
+    expect(store.nameOf(new KnownValue(0))).toBe("");
+    expect(store.nameOf(new KnownValue(0, "x"))).toBe("");
+    expect(new KnownValuesStore().nameOf(new KnownValue(0))).toBe("0");
+  });
+});

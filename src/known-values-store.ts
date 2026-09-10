@@ -44,10 +44,12 @@ export class KnownValuesStore implements Iterable<KnownValue> {
     return this._byValue.get(knownValue.valueBigInt)?.assignedName;
   }
 
-  /** The store's name for the codepoint, else the value's own name. */
+  /**
+   * The store's name for the codepoint (the empty string for the unit
+   * value 0, which the registry names `''`), else the value's own name.
+   */
   nameOf(knownValue: KnownValue): string {
-    const name = this.assignedNameOf(knownValue);
-    return name !== undefined && name !== "" ? name : knownValue.name;
+    return this.assignedNameOf(knownValue) ?? knownValue.name;
   }
 
   get size(): number {
