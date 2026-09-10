@@ -5,6 +5,7 @@
 ```ts
 
 import { Cbor } from '@blockchaincommons/dcbor-compat';
+import { CborNumber } from '@blockchaincommons/dcbor-compat';
 import { CborTaggedDecodable } from '@blockchaincommons/dcbor-compat';
 import { CborTaggedEncodable } from '@blockchaincommons/dcbor-compat';
 import { Digest } from '@blockchaincommons/components';
@@ -644,7 +645,7 @@ export const SSKR_SHARE: KnownValue;
 export const SSKR_SHARE_RAW = 6n;
 
 // @public
-export const TAG_KNOWN_VALUE: number;
+export const TAG_KNOWN_VALUE: CborNumber;
 
 // @public (undocumented)
 export const TARGET: KnownValue;

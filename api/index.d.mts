@@ -1,11 +1,11 @@
-import { Cbor, CborTaggedDecodable, CborTaggedEncodable, Tag } from "@blockchaincommons/dcbor-compat";
+import { Cbor, CborNumber, CborTaggedDecodable, CborTaggedEncodable, Tag } from "@blockchaincommons/dcbor-compat";
 import { Digest, DigestProvider } from "@blockchaincommons/components";
 //#region src/known-value.d.ts
 /**
  * The numeric value for the CBOR tag used for Known Values.
  * This is Tag 40000 as defined in the Blockchain Commons registry.
  */
-declare const TAG_KNOWN_VALUE: number;
+declare const TAG_KNOWN_VALUE: CborNumber;
 /**
  * The CBOR tag used for Known Values.
  * This is Tag 40000 as defined in the Blockchain Commons registry.

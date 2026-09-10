@@ -73,12 +73,13 @@ import {
   MajorType,
 } from "@blockchaincommons/dcbor-compat";
 import { KNOWN_VALUE, Digest, type DigestProvider } from "@blockchaincommons/components";
+import { type CborNumber } from "@blockchaincommons/dcbor-compat";
 
 /**
  * The numeric value for the CBOR tag used for Known Values.
  * This is Tag 40000 as defined in the Blockchain Commons registry.
  */
-export const TAG_KNOWN_VALUE: number = KNOWN_VALUE.value;
+export const TAG_KNOWN_VALUE: CborNumber = KNOWN_VALUE.value;
 
 /**
  * The CBOR tag used for Known Values.
