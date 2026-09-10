@@ -17,23 +17,35 @@ differs from the Rust reference. It has three kinds of entry:
 2. **JS-only input domain** - inputs that have no Rust analog, so there is nothing to diverge from.
 3. **Mapping equivalences** - JS-specific inputs that are validated through the bytes they produce.
 
+Every entry below is checked by `tests/rust-validation`, a Rust program that
+pins `known-values = 0.15.5` and replays `tests/vectors/vectors.json` through
+the reference. The current run: **7 828 vectors — 4 385 match, 3 443 expected
+divergences, 0 mismatches.**
+
 ## 1. True behavioral divergences
 
-_None recorded yet for the extraction release. The port was byte-compatible with
-the Rust reference at the tracked version when it was extracted from the
-`paritytech/bcts` monorepo._
+### D2. A negative integer inside tag 40000 (1 vector)
 
-> Any divergence found after extraction must be added here in the same commit
-> that introduces or discovers it, with the input, the Rust outcome, the
-> TypeScript outcome, and the reason the difference is intentional.
+`d99c4020` (tag 40000 over −1) decodes in the reference to the known value
+18446744073709551615: dcbor's `u64` conversion wraps the negative. TypeScript
+rejects it (`Expected unsigned integer`). Known values are unsigned by
+definition (BCR-2023-002), so the TypeScript behaviour is kept.
 
 ## 2. JS-only input domain
 
-_To be documented as the surface is audited._
+- **Bundled registries (`D1`, 3 435 vectors).** The TypeScript package ships
+  the 14 JSON registries (3 546 entries: RDF, RDFS, OWL, Dublin Core, FOAF,
+  SKOS, Solid, VC, GS1, schema.org, community); the reference's global store
+  holds only the hard-coded constants unless its `directory-loading` feature
+  is used. Every lookup the reference answers with "not found" and TypeScript
+  answers with a bundled name is class D1. For every codepoint both know
+  (0–800), the names are identical.
 
 ## 3. Mapping equivalences
 
-_To be documented as the surface is audited._
+- **Error taxonomy (`E1`, 7 vectors).** Both sides reject malformed or
+  wrong-typed input; the reference reports a dcbor error, TypeScript a plain
+  `Error` (an error code in Phase 3). The harness requires both to reject.
 
 ## Maintenance
 

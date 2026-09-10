@@ -65,21 +65,23 @@
 import {
   type Cbor,
   type Tag,
-  type CborTaggedEncodable,
-  type CborTaggedDecodable,
+  type TagValue,
   cbor,
-  cborData,
   decodeCbor,
-  MajorType,
-} from "@blockchaincommons/dcbor-compat";
-import { KNOWN_VALUE, Digest, type DigestProvider } from "@blockchaincommons/components";
-import { type CborNumber } from "@blockchaincommons/dcbor-compat";
+  taggedValue,
+  isUnsigned,
+  isTagged,
+  asTaggedValue,
+  expectUnsigned,
+} from "@blockchaincommons/dcbor";
+import { KNOWN_VALUE } from "@blockchaincommons/tags";
+import { Digest, type DigestProvider } from "@blockchaincommons/components";
 
 /**
  * The numeric value for the CBOR tag used for Known Values.
  * This is Tag 40000 as defined in the Blockchain Commons registry.
  */
-export const TAG_KNOWN_VALUE: CborNumber = KNOWN_VALUE.value;
+export const TAG_KNOWN_VALUE: TagValue = KNOWN_VALUE.value;
 
 /**
  * The CBOR tag used for Known Values.
@@ -93,9 +95,7 @@ export const KNOWN_VALUE_TAG: Tag = KNOWN_VALUE;
  */
 export type KnownValueInput = number | bigint;
 
-export class KnownValue
-  implements CborTaggedEncodable, CborTaggedDecodable<KnownValue>, DigestProvider
-{
+export class KnownValue implements DigestProvider {
   private readonly _value: bigint;
   private readonly _assignedName: string | undefined;
 
@@ -307,10 +307,7 @@ export class KnownValue
    * ```
    */
   taggedCbor(): Cbor {
-    return cbor({
-      tag: TAG_KNOWN_VALUE,
-      value: this._value,
-    });
+    return taggedValue(KNOWN_VALUE, cbor(this._value));
   }
 
   /**
@@ -326,7 +323,7 @@ export class KnownValue
    * ```
    */
   toCborData(): Uint8Array {
-    return cborData(this.taggedCbor());
+    return this.taggedCbor().toData();
   }
 
   /**
@@ -383,10 +380,10 @@ export class KnownValue
    * ```
    */
   static fromUntaggedCbor(cborValue: Cbor): KnownValue {
-    if (cborValue.type !== MajorType.Unsigned) {
+    if (!isUnsigned(cborValue)) {
       throw new Error(`Expected unsigned integer for KnownValue, got major type ${cborValue.type}`);
     }
-    const numValue = cborValue.value;
+    const numValue = expectUnsigned(cborValue);
     return new KnownValue(typeof numValue === "bigint" ? numValue : BigInt(numValue));
   }
 
@@ -403,16 +400,14 @@ export class KnownValue
    * ```
    */
   static fromTaggedCbor(cborValue: Cbor): KnownValue {
-    if (cborValue.type !== MajorType.Tagged) {
+    const tagged = asTaggedValue(cborValue);
+    if (tagged === undefined) {
       throw new Error(`Expected tagged CBOR for KnownValue, got major type ${cborValue.type}`);
     }
-
-    const tag = cborValue.tag;
-    if (tag !== BigInt(TAG_KNOWN_VALUE) && tag !== TAG_KNOWN_VALUE) {
-      throw new Error(`Expected tag ${TAG_KNOWN_VALUE} for KnownValue, got ${tag}`);
+    if (tagged[0].value !== TAG_KNOWN_VALUE) {
+      throw new Error(`Expected tag ${TAG_KNOWN_VALUE} for KnownValue, got ${tagged[0].value}`);
     }
-
-    return KnownValue.fromUntaggedCbor(cborValue.value);
+    return KnownValue.fromUntaggedCbor(tagged[1]);
   }
 
   /**
@@ -450,7 +445,7 @@ export class KnownValue
    * ```
    */
   static fromCbor(cborValue: Cbor): KnownValue {
-    if (cborValue.type === MajorType.Tagged) {
+    if (isTagged(cborValue)) {
       return KnownValue.fromTaggedCbor(cborValue);
     }
     return KnownValue.fromUntaggedCbor(cborValue);

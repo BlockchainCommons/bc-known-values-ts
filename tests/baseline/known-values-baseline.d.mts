@@ -1,11 +1,11 @@
-import { Cbor, Tag, TagValue } from "@blockchaincommons/dcbor";
+import { Cbor, CborNumber, CborTaggedDecodable, CborTaggedEncodable, Tag } from "@blockchaincommons/dcbor-compat";
 import { Digest, DigestProvider } from "@blockchaincommons/components";
 //#region src/known-value.d.ts
 /**
  * The numeric value for the CBOR tag used for Known Values.
  * This is Tag 40000 as defined in the Blockchain Commons registry.
  */
-declare const TAG_KNOWN_VALUE: TagValue;
+declare const TAG_KNOWN_VALUE: CborNumber;
 /**
  * The CBOR tag used for Known Values.
  * This is Tag 40000 as defined in the Blockchain Commons registry.
@@ -16,7 +16,7 @@ declare const KNOWN_VALUE_TAG: Tag;
  * Supports both number (for values up to 2^53-1) and bigint (for full 64-bit range).
  */
 type KnownValueInput = number | bigint;
-declare class KnownValue implements DigestProvider {
+declare class KnownValue implements CborTaggedEncodable, CborTaggedDecodable<KnownValue>, DigestProvider {
   private readonly _value;
   private readonly _assignedName;
   /**

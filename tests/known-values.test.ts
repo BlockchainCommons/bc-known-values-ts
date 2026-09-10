@@ -19,7 +19,14 @@ import {
   VERIFIABLE_AT,
   VERIFIABLE_AT_RAW,
 } from "../src/index";
-import { cbor, MajorType, bytesToHex, hexToBytes, isTagged } from "@blockchaincommons/dcbor-compat";
+import {
+  cbor,
+  MajorType,
+  bytesToHex,
+  hexToBytes,
+  isTagged,
+  taggedValue,
+} from "@blockchaincommons/dcbor";
 
 describe("KnownValue", () => {
   test("should create a KnownValue with just a value", () => {
@@ -289,7 +296,7 @@ describe("KnownValue CBOR Decoding", () => {
 
   test("should auto-detect tagged vs untagged with fromCbor", () => {
     // Tagged
-    const tagged = cbor({ tag: 40000, value: 42 });
+    const tagged = taggedValue(40000, 42);
     const kv1 = KnownValue.fromCbor(tagged);
     expect(kv1.value()).toBe(42);
 
@@ -300,7 +307,7 @@ describe("KnownValue CBOR Decoding", () => {
   });
 
   test("should throw on wrong tag", () => {
-    const wrongTag = cbor({ tag: 100, value: 42 });
+    const wrongTag = taggedValue(100, 42);
     expect(() => KnownValue.fromTaggedCbor(wrongTag)).toThrow(/Expected tag 40000/);
   });
 
@@ -311,7 +318,7 @@ describe("KnownValue CBOR Decoding", () => {
 
   test("instance methods should delegate to static methods", () => {
     const kv = new KnownValue(0); // dummy instance for interface compliance
-    const tagged = cbor({ tag: 40000, value: 99 });
+    const tagged = taggedValue(40000, 99);
     const untagged = cbor(99);
 
     const decoded1 = kv.fromTaggedCbor(tagged);
@@ -429,7 +436,7 @@ describe("Rust Parity: DigestProvider", () => {
     expect(digest).toBeDefined();
 
     // The digest should be a SHA-256 hash (32 bytes = 64 hex chars)
-    const hex = digest.hex();
+    const hex = digest.toHex();
     expect(hex).toHaveLength(64);
   });
 
@@ -438,7 +445,7 @@ describe("Rust Parity: DigestProvider", () => {
     const kv2 = new KnownValue(1);
 
     // Same value should produce same digest
-    expect(kv1.digest().hex()).toBe(kv2.digest().hex());
+    expect(kv1.digest().toHex()).toBe(kv2.digest().toHex());
   });
 
   test("different values should produce different digests", () => {
@@ -446,7 +453,7 @@ describe("Rust Parity: DigestProvider", () => {
     const kv2 = new KnownValue(2);
 
     // Different values should produce different digests
-    expect(kv1.digest().hex()).not.toBe(kv2.digest().hex());
+    expect(kv1.digest().toHex()).not.toBe(kv2.digest().toHex());
   });
 
   test("digest should be based on tagged CBOR encoding", () => {

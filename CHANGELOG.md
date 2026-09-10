@@ -2,6 +2,10 @@
 
 ## 1.0.0-beta.1
 
+### Changed
+
+- Ported to the canonical `@blockchaincommons/dcbor`, `@blockchaincommons/tags` (for the tag) and the redesigned `@blockchaincommons/components`; every wire byte unchanged, verified against a frozen baseline and against `known-values-rust` 0.15.5 (`tests/rust-validation`, see `RUST_DIVERGENCES.md`).
+
 Extracted from the [`paritytech/bcts`](https://github.com/paritytech/bcts) monorepo, where this library was published as `@bcts/known-values`. The public API is unchanged; see [MIGRATION.md](./MIGRATION.md).
 
 ---

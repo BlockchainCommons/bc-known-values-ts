@@ -4,13 +4,11 @@
 
 ```ts
 
-import { Cbor } from '@blockchaincommons/dcbor-compat';
-import { CborNumber } from '@blockchaincommons/dcbor-compat';
-import { CborTaggedDecodable } from '@blockchaincommons/dcbor-compat';
-import { CborTaggedEncodable } from '@blockchaincommons/dcbor-compat';
+import { Cbor } from '@blockchaincommons/dcbor';
 import { Digest } from '@blockchaincommons/components';
 import { DigestProvider } from '@blockchaincommons/components';
-import { Tag } from '@blockchaincommons/dcbor-compat';
+import { Tag } from '@blockchaincommons/dcbor';
+import { TagValue } from '@blockchaincommons/dcbor';
 
 // @public (undocumented)
 export const ACYCLIC_GRAPH: KnownValue;
@@ -265,7 +263,7 @@ export const KNOWN_VALUE_TAG: Tag;
 export const KNOWN_VALUES: LazyKnownValues;
 
 // @public (undocumented)
-export class KnownValue implements CborTaggedEncodable, CborTaggedDecodable<KnownValue>, DigestProvider {
+export class KnownValue implements DigestProvider {
     constructor(value: KnownValueInput, assignedName?: string);
     assignedName(): string | undefined;
     cborTags(): Tag[];
@@ -645,7 +643,7 @@ export const SSKR_SHARE: KnownValue;
 export const SSKR_SHARE_RAW = 6n;
 
 // @public
-export const TAG_KNOWN_VALUE: CborNumber;
+export const TAG_KNOWN_VALUE: TagValue;
 
 // @public (undocumented)
 export const TARGET: KnownValue;
