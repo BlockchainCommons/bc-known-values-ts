@@ -27,19 +27,43 @@ bun add @blockchaincommons/known-values
 ```typescript
 import {
   KnownValue,
-  TAG_KNOWN_VALUE,
-  KNOWN_VALUE_TAG,
   KnownValuesStore,
-  loadBundledRegistries,
-  IS_A_RAW,
-  ID_RAW,
-  SIGNED_RAW,
-  NOTE_RAW,
-  HAS_RECIPIENT_RAW,
+  KNOWN_VALUE_CODEPOINTS,
+  IS_A,
+  NOTE,
+  getGlobalKnownValuesStore,
+  resolveKnownValue,
 } from "@blockchaincommons/known-values";
-```
+import { decodeCbor } from "@blockchaincommons/dcbor";
 
-Runnable examples live in the [`examples/`](https://github.com/BlockchainCommons/known-values-ts/tree/master/examples) directory.
+// A known value is an unsigned codepoint with an optional registry name.
+IS_A.value; // 1
+IS_A.name; // "isA"
+new KnownValue(9999).name; // "9999"
+
+// Tagged CBOR (#6.40000) and the digest envelopes use.
+IS_A.toCbor().toData(); // d9 9c40 01
+KnownValue.fromCbor(decodeCbor(IS_A.toCbor().toData())).equals(IS_A); // true
+IS_A.digest().toHex();
+
+// The global registry: the BCR-2023-002 constants plus the bundled
+// vocabularies (RDF, schema.org, GS1, ...), built on first use.
+const registry = getGlobalKnownValuesStore();
+registry.byName("schema:Thing")?.value;
+registry.byValue(4)?.name; // "note"
+resolveKnownValue(4).equals(NOTE); // true
+
+// Codepoints as literals, for switch statements.
+switch (IS_A.value) {
+  case KNOWN_VALUE_CODEPOINTS.IS_A:
+    break;
+}
+
+// Your own store.
+const mine = new KnownValuesStore([IS_A]);
+mine.register(new KnownValue(1000, "myPredicate"));
+mine.byName("myPredicate")?.value; // 1000
+```
 
 ## Status - Beta
 

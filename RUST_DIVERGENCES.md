@@ -41,11 +41,15 @@ definition (BCR-2023-002), so the TypeScript behaviour is kept.
   answers with a bundled name is class D1. For every codepoint both know
   (0–800), the names are identical.
 
+- **Untagged decoding (`D3`, 2 vectors).** `KnownValue.fromCbor` accepts
+  the bare unsigned integer as well as `#6.40000(n)`; the reference's
+  `TryFrom<CBOR>` requires the tag.
+
 ## 3. Mapping equivalences
 
-- **Error taxonomy (`E1`, 7 vectors).** Both sides reject malformed or
-  wrong-typed input; the reference reports a dcbor error, TypeScript a plain
-  `Error` (an error code in Phase 3). The harness requires both to reject.
+- **Error taxonomy (`E1`, 5 vectors).** Both sides reject malformed or
+  wrong-typed input; the reference reports its dcbor error, TypeScript a
+  dcbor `CborError`. The harness requires both to reject.
 
 ## Maintenance
 

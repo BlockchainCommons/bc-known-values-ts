@@ -1,134 +1,16 @@
 /**
- * Copyright © 2023-2026 Blockchain Commons, LLC
- * Copyright © 2025-2026 Parity Technologies
+ * Known values: named codepoints for predicates, objects and other
+ * vocabulary terms, encoded as CBOR tag 40000 over an unsigned integer
+ * (BCR-2023-002).
  *
+ * @packageDocumentation
  */
-
-export { KnownValue, TAG_KNOWN_VALUE, KNOWN_VALUE_TAG, type KnownValueInput } from "./known-value";
-export { KnownValuesStore } from "./known-values-store";
-export { loadBundledRegistries, type RegistryEntry, type RegistryFile } from "./bundled-registries";
+export { KnownValue, type KnownValueInput } from "./known-value.js";
+export { KnownValuesStore } from "./known-values-store.js";
+export { getGlobalKnownValuesStore, withKnownValues, resolveKnownValue } from "./registry.js";
+export { BUNDLED_REGISTRY } from "./registry.generated.js";
+export { KNOWN_VALUE_CODEPOINTS, REGISTRY_CONSTANTS } from "./constants.js";
 export {
-  // =============================================================================
-  // Raw Value Constants (_RAW)
-  // =============================================================================
-  // General
-  UNIT_RAW,
-  IS_A_RAW,
-  ID_RAW,
-  SIGNED_RAW,
-  NOTE_RAW,
-  HAS_RECIPIENT_RAW,
-  SSKR_SHARE_RAW,
-  CONTROLLER_RAW,
-  KEY_RAW,
-  DEREFERENCE_VIA_RAW,
-  ENTITY_RAW,
-  NAME_RAW,
-  LANGUAGE_RAW,
-  ISSUER_RAW,
-  HOLDER_RAW,
-  SALT_RAW,
-  DATE_RAW,
-  UNKNOWN_VALUE_RAW,
-  VERSION_VALUE_RAW,
-  HAS_SECRET_RAW,
-  DIFF_EDITS_RAW,
-  VALID_FROM_RAW,
-  VALID_UNTIL_RAW,
-  POSITION_RAW,
-  NICKNAME_RAW,
-  VALUE_RAW,
-  ATTESTATION_RAW,
-  VERIFIABLE_AT_RAW,
-  // Attachments
-  ATTACHMENT_RAW,
-  VENDOR_RAW,
-  CONFORMS_TO_RAW,
-  // XID Documents
-  ALLOW_RAW,
-  DENY_RAW,
-  ENDPOINT_RAW,
-  DELEGATE_RAW,
-  PROVENANCE_RAW,
-  PRIVATE_KEY_RAW,
-  SERVICE_RAW,
-  CAPABILITY_RAW,
-  PROVENANCE_GENERATOR_RAW,
-  // XID Privileges
-  PRIVILEGE_ALL_RAW,
-  PRIVILEGE_AUTH_RAW,
-  PRIVILEGE_SIGN_RAW,
-  PRIVILEGE_ENCRYPT_RAW,
-  PRIVILEGE_ELIDE_RAW,
-  PRIVILEGE_ISSUE_RAW,
-  PRIVILEGE_ACCESS_RAW,
-  PRIVILEGE_DELEGATE_RAW,
-  PRIVILEGE_VERIFY_RAW,
-  PRIVILEGE_UPDATE_RAW,
-  PRIVILEGE_TRANSFER_RAW,
-  PRIVILEGE_ELECT_RAW,
-  PRIVILEGE_BURN_RAW,
-  PRIVILEGE_REVOKE_RAW,
-  // Expression and Function Calls
-  BODY_RAW,
-  RESULT_RAW,
-  ERROR_RAW,
-  OK_VALUE_RAW,
-  PROCESSING_VALUE_RAW,
-  SENDER_RAW,
-  SENDER_CONTINUATION_RAW,
-  RECIPIENT_CONTINUATION_RAW,
-  CONTENT_RAW,
-  // Cryptography
-  SEED_TYPE_RAW,
-  PRIVATE_KEY_TYPE_RAW,
-  PUBLIC_KEY_TYPE_RAW,
-  MASTER_KEY_TYPE_RAW,
-  // Cryptocurrency Assets
-  ASSET_RAW,
-  BITCOIN_VALUE_RAW,
-  ETHEREUM_VALUE_RAW,
-  TEZOS_VALUE_RAW,
-  // Cryptocurrency Networks
-  NETWORK_RAW,
-  MAIN_NET_VALUE_RAW,
-  TEST_NET_VALUE_RAW,
-  // Bitcoin
-  BIP32_KEY_TYPE_RAW,
-  CHAIN_CODE_RAW,
-  DERIVATION_PATH_TYPE_RAW,
-  PARENT_PATH_RAW,
-  CHILDREN_PATH_RAW,
-  PARENT_FINGERPRINT_RAW,
-  PSBT_TYPE_RAW,
-  OUTPUT_DESCRIPTOR_TYPE_RAW,
-  OUTPUT_DESCRIPTOR_RAW,
-  // Graphs
-  GRAPH_RAW,
-  SOURCE_TARGET_GRAPH_RAW,
-  PARENT_CHILD_GRAPH_RAW,
-  DIGRAPH_RAW,
-  ACYCLIC_GRAPH_RAW,
-  MULTIGRAPH_RAW,
-  PSEUDOGRAPH_RAW,
-  GRAPH_FRAGMENT_RAW,
-  DAG_RAW,
-  TREE_RAW,
-  FOREST_RAW,
-  COMPOUND_GRAPH_RAW,
-  HYPERGRAPH_RAW,
-  DIHYPERGRAPH_RAW,
-  NODE_RAW,
-  EDGE_RAW,
-  SOURCE_RAW,
-  TARGET_RAW,
-  PARENT_RAW,
-  CHILD_RAW,
-  SELF_RAW,
-  // =============================================================================
-  // KnownValue Constants
-  // =============================================================================
-  // General
   UNIT,
   IS_A,
   ID,
@@ -157,11 +39,9 @@ export {
   VALUE,
   ATTESTATION,
   VERIFIABLE_AT,
-  // Attachments
   ATTACHMENT,
   VENDOR,
   CONFORMS_TO,
-  // XID Documents
   ALLOW,
   DENY,
   ENDPOINT,
@@ -171,7 +51,6 @@ export {
   SERVICE,
   CAPABILITY,
   PROVENANCE_GENERATOR,
-  // XID Privileges
   PRIVILEGE_ALL,
   PRIVILEGE_AUTH,
   PRIVILEGE_SIGN,
@@ -186,7 +65,6 @@ export {
   PRIVILEGE_ELECT,
   PRIVILEGE_BURN,
   PRIVILEGE_REVOKE,
-  // Expression and Function Calls
   BODY,
   RESULT,
   ERROR,
@@ -196,21 +74,17 @@ export {
   SENDER_CONTINUATION,
   RECIPIENT_CONTINUATION,
   CONTENT,
-  // Cryptography
   SEED_TYPE,
   PRIVATE_KEY_TYPE,
   PUBLIC_KEY_TYPE,
   MASTER_KEY_TYPE,
-  // Cryptocurrency Assets
   ASSET,
   BITCOIN_VALUE,
   ETHEREUM_VALUE,
   TEZOS_VALUE,
-  // Cryptocurrency Networks
   NETWORK,
   MAIN_NET_VALUE,
   TEST_NET_VALUE,
-  // Bitcoin
   BIP32_KEY_TYPE,
   CHAIN_CODE,
   DERIVATION_PATH_TYPE,
@@ -220,7 +94,6 @@ export {
   PSBT_TYPE,
   OUTPUT_DESCRIPTOR_TYPE,
   OUTPUT_DESCRIPTOR,
-  // Graphs
   GRAPH,
   SOURCE_TARGET_GRAPH,
   PARENT_CHILD_GRAPH,
@@ -242,7 +115,4 @@ export {
   PARENT,
   CHILD,
   SELF,
-  // Registry
-  KNOWN_VALUES,
-  LazyKnownValues,
-} from "./known-values-registry";
+} from "./constants.js";

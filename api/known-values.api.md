@@ -5,196 +5,111 @@
 ```ts
 
 import { Cbor } from '@blockchaincommons/dcbor';
+import { CborCodec } from '@blockchaincommons/dcbor';
+import { CborTagged } from '@blockchaincommons/dcbor';
 import { Digest } from '@blockchaincommons/components';
 import { DigestProvider } from '@blockchaincommons/components';
 import { Tag } from '@blockchaincommons/dcbor';
-import { TagValue } from '@blockchaincommons/dcbor';
+import { ToCbor } from '@blockchaincommons/dcbor';
 
 // @public (undocumented)
 export const ACYCLIC_GRAPH: KnownValue;
 
 // @public (undocumented)
-export const ACYCLIC_GRAPH_RAW = 604n;
-
-// @public (undocumented)
 export const ALLOW: KnownValue;
-
-// @public (undocumented)
-export const ALLOW_RAW = 60n;
 
 // @public (undocumented)
 export const ASSET: KnownValue;
 
 // @public (undocumented)
-export const ASSET_RAW = 300n;
-
-// @public (undocumented)
 export const ATTACHMENT: KnownValue;
-
-// @public (undocumented)
-export const ATTACHMENT_RAW = 50n;
 
 // @public (undocumented)
 export const ATTESTATION: KnownValue;
 
 // @public (undocumented)
-export const ATTESTATION_RAW = 26n;
-
-// @public (undocumented)
 export const BIP32_KEY_TYPE: KnownValue;
-
-// @public (undocumented)
-export const BIP32_KEY_TYPE_RAW = 500n;
 
 // @public (undocumented)
 export const BITCOIN_VALUE: KnownValue;
 
 // @public (undocumented)
-export const BITCOIN_VALUE_RAW = 301n;
-
-// @public (undocumented)
 export const BODY: KnownValue;
 
-// @public (undocumented)
-export const BODY_RAW = 100n;
+// @public
+export const BUNDLED_REGISTRY: readonly (readonly [number, string])[];
 
 // @public (undocumented)
 export const CAPABILITY: KnownValue;
 
 // @public (undocumented)
-export const CAPABILITY_RAW = 67n;
-
-// @public (undocumented)
 export const CHAIN_CODE: KnownValue;
-
-// @public (undocumented)
-export const CHAIN_CODE_RAW = 501n;
 
 // @public (undocumented)
 export const CHILD: KnownValue;
 
 // @public (undocumented)
-export const CHILD_RAW = 705n;
-
-// @public (undocumented)
 export const CHILDREN_PATH: KnownValue;
-
-// @public (undocumented)
-export const CHILDREN_PATH_RAW = 504n;
 
 // @public (undocumented)
 export const COMPOUND_GRAPH: KnownValue;
 
 // @public (undocumented)
-export const COMPOUND_GRAPH_RAW = 611n;
-
-// @public (undocumented)
 export const CONFORMS_TO: KnownValue;
-
-// @public (undocumented)
-export const CONFORMS_TO_RAW = 52n;
 
 // @public (undocumented)
 export const CONTENT: KnownValue;
 
 // @public (undocumented)
-export const CONTENT_RAW = 108n;
-
-// @public (undocumented)
 export const CONTROLLER: KnownValue;
-
-// @public (undocumented)
-export const CONTROLLER_RAW = 7n;
 
 // @public (undocumented)
 export const DAG: KnownValue;
 
 // @public (undocumented)
-export const DAG_RAW = 608n;
-
-// @public (undocumented)
 export const DATE: KnownValue;
-
-// @public (undocumented)
-export const DATE_RAW = 16n;
 
 // @public (undocumented)
 export const DELEGATE: KnownValue;
 
 // @public (undocumented)
-export const DELEGATE_RAW = 63n;
-
-// @public (undocumented)
 export const DENY: KnownValue;
-
-// @public (undocumented)
-export const DENY_RAW = 61n;
 
 // @public (undocumented)
 export const DEREFERENCE_VIA: KnownValue;
 
 // @public (undocumented)
-export const DEREFERENCE_VIA_RAW = 9n;
-
-// @public (undocumented)
 export const DERIVATION_PATH_TYPE: KnownValue;
-
-// @public (undocumented)
-export const DERIVATION_PATH_TYPE_RAW = 502n;
 
 // @public (undocumented)
 export const DIFF_EDITS: KnownValue;
 
 // @public (undocumented)
-export const DIFF_EDITS_RAW = 20n;
-
-// @public (undocumented)
 export const DIGRAPH: KnownValue;
-
-// @public (undocumented)
-export const DIGRAPH_RAW = 603n;
 
 // @public (undocumented)
 export const DIHYPERGRAPH: KnownValue;
 
 // @public (undocumented)
-export const DIHYPERGRAPH_RAW = 613n;
-
-// @public (undocumented)
 export const EDGE: KnownValue;
-
-// @public (undocumented)
-export const EDGE_RAW = 701n;
 
 // @public (undocumented)
 export const ENDPOINT: KnownValue;
 
 // @public (undocumented)
-export const ENDPOINT_RAW = 62n;
-
-// @public (undocumented)
 export const ENTITY: KnownValue;
-
-// @public (undocumented)
-export const ENTITY_RAW = 10n;
 
 // @public (undocumented)
 export const ERROR: KnownValue;
 
 // @public (undocumented)
-export const ERROR_RAW = 102n;
-
-// @public (undocumented)
 export const ETHEREUM_VALUE: KnownValue;
-
-// @public (undocumented)
-export const ETHEREUM_VALUE_RAW = 302n;
 
 // @public (undocumented)
 export const FOREST: KnownValue;
 
-// @public (undocumented)
-export const FOREST_RAW = 610n;
+// @public
+export function getGlobalKnownValuesStore(): KnownValuesStore;
 
 // @public (undocumented)
 export const GRAPH: KnownValue;
@@ -203,185 +118,213 @@ export const GRAPH: KnownValue;
 export const GRAPH_FRAGMENT: KnownValue;
 
 // @public (undocumented)
-export const GRAPH_FRAGMENT_RAW = 607n;
-
-// @public (undocumented)
-export const GRAPH_RAW = 600n;
-
-// @public (undocumented)
 export const HAS_RECIPIENT: KnownValue;
-
-// @public (undocumented)
-export const HAS_RECIPIENT_RAW = 5n;
 
 // @public (undocumented)
 export const HAS_SECRET: KnownValue;
 
 // @public (undocumented)
-export const HAS_SECRET_RAW = 19n;
-
-// @public (undocumented)
 export const HOLDER: KnownValue;
-
-// @public (undocumented)
-export const HOLDER_RAW = 14n;
 
 // @public (undocumented)
 export const HYPERGRAPH: KnownValue;
 
 // @public (undocumented)
-export const HYPERGRAPH_RAW = 612n;
-
-// @public (undocumented)
 export const ID: KnownValue;
-
-// @public (undocumented)
-export const ID_RAW = 2n;
 
 // @public (undocumented)
 export const IS_A: KnownValue;
 
 // @public (undocumented)
-export const IS_A_RAW = 1n;
-
-// @public (undocumented)
 export const ISSUER: KnownValue;
-
-// @public (undocumented)
-export const ISSUER_RAW = 13n;
 
 // @public (undocumented)
 export const KEY: KnownValue;
 
-// @public (undocumented)
-export const KEY_RAW = 8n;
-
 // @public
-export const KNOWN_VALUE_TAG: Tag;
-
-// @public
-export const KNOWN_VALUES: LazyKnownValues;
+export const KNOWN_VALUE_CODEPOINTS: {
+    readonly UNIT: 0;
+    readonly IS_A: 1;
+    readonly ID: 2;
+    readonly SIGNED: 3;
+    readonly NOTE: 4;
+    readonly HAS_RECIPIENT: 5;
+    readonly SSKR_SHARE: 6;
+    readonly CONTROLLER: 7;
+    readonly KEY: 8;
+    readonly DEREFERENCE_VIA: 9;
+    readonly ENTITY: 10;
+    readonly NAME: 11;
+    readonly LANGUAGE: 12;
+    readonly ISSUER: 13;
+    readonly HOLDER: 14;
+    readonly SALT: 15;
+    readonly DATE: 16;
+    readonly UNKNOWN_VALUE: 17;
+    readonly VERSION_VALUE: 18;
+    readonly HAS_SECRET: 19;
+    readonly DIFF_EDITS: 20;
+    readonly VALID_FROM: 21;
+    readonly VALID_UNTIL: 22;
+    readonly POSITION: 23;
+    readonly NICKNAME: 24;
+    readonly VALUE: 25;
+    readonly ATTESTATION: 26;
+    readonly VERIFIABLE_AT: 27;
+    readonly ATTACHMENT: 50;
+    readonly VENDOR: 51;
+    readonly CONFORMS_TO: 52;
+    readonly ALLOW: 60;
+    readonly DENY: 61;
+    readonly ENDPOINT: 62;
+    readonly DELEGATE: 63;
+    readonly PROVENANCE: 64;
+    readonly PRIVATE_KEY: 65;
+    readonly SERVICE: 66;
+    readonly CAPABILITY: 67;
+    readonly PROVENANCE_GENERATOR: 68;
+    readonly PRIVILEGE_ALL: 70;
+    readonly PRIVILEGE_AUTH: 71;
+    readonly PRIVILEGE_SIGN: 72;
+    readonly PRIVILEGE_ENCRYPT: 73;
+    readonly PRIVILEGE_ELIDE: 74;
+    readonly PRIVILEGE_ISSUE: 75;
+    readonly PRIVILEGE_ACCESS: 76;
+    readonly PRIVILEGE_DELEGATE: 80;
+    readonly PRIVILEGE_VERIFY: 81;
+    readonly PRIVILEGE_UPDATE: 82;
+    readonly PRIVILEGE_TRANSFER: 83;
+    readonly PRIVILEGE_ELECT: 84;
+    readonly PRIVILEGE_BURN: 85;
+    readonly PRIVILEGE_REVOKE: 86;
+    readonly BODY: 100;
+    readonly RESULT: 101;
+    readonly ERROR: 102;
+    readonly OK_VALUE: 103;
+    readonly PROCESSING_VALUE: 104;
+    readonly SENDER: 105;
+    readonly SENDER_CONTINUATION: 106;
+    readonly RECIPIENT_CONTINUATION: 107;
+    readonly CONTENT: 108;
+    readonly SEED_TYPE: 200;
+    readonly PRIVATE_KEY_TYPE: 201;
+    readonly PUBLIC_KEY_TYPE: 202;
+    readonly MASTER_KEY_TYPE: 203;
+    readonly ASSET: 300;
+    readonly BITCOIN_VALUE: 301;
+    readonly ETHEREUM_VALUE: 302;
+    readonly TEZOS_VALUE: 303;
+    readonly NETWORK: 400;
+    readonly MAIN_NET_VALUE: 401;
+    readonly TEST_NET_VALUE: 402;
+    readonly BIP32_KEY_TYPE: 500;
+    readonly CHAIN_CODE: 501;
+    readonly DERIVATION_PATH_TYPE: 502;
+    readonly PARENT_PATH: 503;
+    readonly CHILDREN_PATH: 504;
+    readonly PARENT_FINGERPRINT: 505;
+    readonly PSBT_TYPE: 506;
+    readonly OUTPUT_DESCRIPTOR_TYPE: 507;
+    readonly OUTPUT_DESCRIPTOR: 508;
+    readonly GRAPH: 600;
+    readonly SOURCE_TARGET_GRAPH: 601;
+    readonly PARENT_CHILD_GRAPH: 602;
+    readonly DIGRAPH: 603;
+    readonly ACYCLIC_GRAPH: 604;
+    readonly MULTIGRAPH: 605;
+    readonly PSEUDOGRAPH: 606;
+    readonly GRAPH_FRAGMENT: 607;
+    readonly DAG: 608;
+    readonly TREE: 609;
+    readonly FOREST: 610;
+    readonly COMPOUND_GRAPH: 611;
+    readonly HYPERGRAPH: 612;
+    readonly DIHYPERGRAPH: 613;
+    readonly NODE: 700;
+    readonly EDGE: 701;
+    readonly SOURCE: 702;
+    readonly TARGET: 703;
+    readonly PARENT: 704;
+    readonly CHILD: 705;
+    readonly SELF: 706;
+};
 
 // @public (undocumented)
-export class KnownValue implements DigestProvider {
+export class KnownValue implements ToCbor, CborTagged, DigestProvider {
     constructor(value: KnownValueInput, assignedName?: string);
-    assignedName(): string | undefined;
+    get assignedName(): string | undefined;
+    // (undocumented)
     cborTags(): Tag[];
+    static get codec(): CborCodec<KnownValue>;
     digest(): Digest;
     equals(other: KnownValue): boolean;
+    // (undocumented)
+    static from(value: KnownValueInput, assignedName?: string): KnownValue;
     static fromCbor(cborValue: Cbor): KnownValue;
-    static fromCborData(data: Uint8Array): KnownValue;
-    fromTaggedCbor(cborValue: Cbor): KnownValue;
-    static fromTaggedCbor(cborValue: Cbor): KnownValue;
-    fromUntaggedCbor(cborValue: Cbor): KnownValue;
-    static fromUntaggedCbor(cborValue: Cbor): KnownValue;
-    hashCode(): number;
-    name(): string;
-    taggedCbor(): Cbor;
-    taggedCborData(): Uint8Array;
-    toCborData(): Uint8Array;
+    get name(): string;
+    toCbor(): Cbor;
+    // (undocumented)
     toString(): string;
     untaggedCbor(): Cbor;
-    value(): number;
-    valueBigInt(): bigint;
+    get value(): number | bigint;
+    get valueBigInt(): bigint;
 }
 
 // @public
 export type KnownValueInput = number | bigint;
 
-// @public
-export class KnownValuesStore {
+// @public (undocumented)
+export class KnownValuesStore implements Iterable<KnownValue> {
+    // (undocumented)
+    [Symbol.iterator](): Iterator<KnownValue>;
     constructor(knownValues?: Iterable<KnownValue>);
-    assignedName(knownValue: KnownValue): string | undefined;
+    assignedNameOf(knownValue: KnownValue): string | undefined;
+    byName(assignedName: string): KnownValue | undefined;
+    byValue(value: KnownValueInput): KnownValue | undefined;
+    // (undocumented)
     clone(): KnownValuesStore;
-    insert(knownValue: KnownValue): void;
-    static knownValueForName(name: string, knownValues?: KnownValuesStore): KnownValue | undefined;
-    static knownValueForRawValue(rawValue: KnownValueInput, knownValues?: KnownValuesStore): KnownValue;
-    knownValueForValue(rawValue: KnownValueInput): KnownValue | undefined;
-    knownValueNamed(assignedName: string): KnownValue | undefined;
-    name(knownValue: KnownValue): string;
-    static nameForKnownValue(knownValue: KnownValue, knownValues?: KnownValuesStore): string;
+    nameOf(knownValue: KnownValue): string;
+    register(knownValue: KnownValue): void;
+    // (undocumented)
+    get size(): number;
+    values(): IterableIterator<KnownValue>;
 }
 
 // @public (undocumented)
 export const LANGUAGE: KnownValue;
 
 // @public (undocumented)
-export const LANGUAGE_RAW = 12n;
-
-// @public
-export class LazyKnownValues {
-    get(): KnownValuesStore;
-}
-
-// @public
-export function loadBundledRegistries(): KnownValue[];
-
-// @public (undocumented)
 export const MAIN_NET_VALUE: KnownValue;
-
-// @public (undocumented)
-export const MAIN_NET_VALUE_RAW = 401n;
 
 // @public (undocumented)
 export const MASTER_KEY_TYPE: KnownValue;
 
 // @public (undocumented)
-export const MASTER_KEY_TYPE_RAW = 203n;
-
-// @public (undocumented)
 export const MULTIGRAPH: KnownValue;
-
-// @public (undocumented)
-export const MULTIGRAPH_RAW = 605n;
 
 // @public (undocumented)
 export const NAME: KnownValue;
 
 // @public (undocumented)
-export const NAME_RAW = 11n;
-
-// @public (undocumented)
 export const NETWORK: KnownValue;
-
-// @public (undocumented)
-export const NETWORK_RAW = 400n;
 
 // @public (undocumented)
 export const NICKNAME: KnownValue;
 
 // @public (undocumented)
-export const NICKNAME_RAW = 24n;
-
-// @public (undocumented)
 export const NODE: KnownValue;
-
-// @public (undocumented)
-export const NODE_RAW = 700n;
 
 // @public (undocumented)
 export const NOTE: KnownValue;
 
 // @public (undocumented)
-export const NOTE_RAW = 4n;
-
-// @public (undocumented)
 export const OK_VALUE: KnownValue;
-
-// @public (undocumented)
-export const OK_VALUE_RAW = 103n;
 
 // @public (undocumented)
 export const OUTPUT_DESCRIPTOR: KnownValue;
 
 // @public (undocumented)
-export const OUTPUT_DESCRIPTOR_RAW = 508n;
-
-// @public (undocumented)
 export const OUTPUT_DESCRIPTOR_TYPE: KnownValue;
-
-// @public (undocumented)
-export const OUTPUT_DESCRIPTOR_TYPE_RAW = 507n;
 
 // @public (undocumented)
 export const PARENT: KnownValue;
@@ -390,130 +333,64 @@ export const PARENT: KnownValue;
 export const PARENT_CHILD_GRAPH: KnownValue;
 
 // @public (undocumented)
-export const PARENT_CHILD_GRAPH_RAW = 602n;
-
-// @public (undocumented)
 export const PARENT_FINGERPRINT: KnownValue;
-
-// @public (undocumented)
-export const PARENT_FINGERPRINT_RAW = 505n;
 
 // @public (undocumented)
 export const PARENT_PATH: KnownValue;
 
 // @public (undocumented)
-export const PARENT_PATH_RAW = 503n;
-
-// @public (undocumented)
-export const PARENT_RAW = 704n;
-
-// @public (undocumented)
 export const POSITION: KnownValue;
-
-// @public (undocumented)
-export const POSITION_RAW = 23n;
 
 // @public (undocumented)
 export const PRIVATE_KEY: KnownValue;
 
 // @public (undocumented)
-export const PRIVATE_KEY_RAW = 65n;
-
-// @public (undocumented)
 export const PRIVATE_KEY_TYPE: KnownValue;
-
-// @public (undocumented)
-export const PRIVATE_KEY_TYPE_RAW = 201n;
 
 // @public (undocumented)
 export const PRIVILEGE_ACCESS: KnownValue;
 
 // @public (undocumented)
-export const PRIVILEGE_ACCESS_RAW = 76n;
-
-// @public (undocumented)
 export const PRIVILEGE_ALL: KnownValue;
-
-// @public (undocumented)
-export const PRIVILEGE_ALL_RAW = 70n;
 
 // @public (undocumented)
 export const PRIVILEGE_AUTH: KnownValue;
 
 // @public (undocumented)
-export const PRIVILEGE_AUTH_RAW = 71n;
-
-// @public (undocumented)
 export const PRIVILEGE_BURN: KnownValue;
-
-// @public (undocumented)
-export const PRIVILEGE_BURN_RAW = 85n;
 
 // @public (undocumented)
 export const PRIVILEGE_DELEGATE: KnownValue;
 
 // @public (undocumented)
-export const PRIVILEGE_DELEGATE_RAW = 80n;
-
-// @public (undocumented)
 export const PRIVILEGE_ELECT: KnownValue;
-
-// @public (undocumented)
-export const PRIVILEGE_ELECT_RAW = 84n;
 
 // @public (undocumented)
 export const PRIVILEGE_ELIDE: KnownValue;
 
 // @public (undocumented)
-export const PRIVILEGE_ELIDE_RAW = 74n;
-
-// @public (undocumented)
 export const PRIVILEGE_ENCRYPT: KnownValue;
-
-// @public (undocumented)
-export const PRIVILEGE_ENCRYPT_RAW = 73n;
 
 // @public (undocumented)
 export const PRIVILEGE_ISSUE: KnownValue;
 
 // @public (undocumented)
-export const PRIVILEGE_ISSUE_RAW = 75n;
-
-// @public (undocumented)
 export const PRIVILEGE_REVOKE: KnownValue;
-
-// @public (undocumented)
-export const PRIVILEGE_REVOKE_RAW = 86n;
 
 // @public (undocumented)
 export const PRIVILEGE_SIGN: KnownValue;
 
 // @public (undocumented)
-export const PRIVILEGE_SIGN_RAW = 72n;
-
-// @public (undocumented)
 export const PRIVILEGE_TRANSFER: KnownValue;
-
-// @public (undocumented)
-export const PRIVILEGE_TRANSFER_RAW = 83n;
 
 // @public (undocumented)
 export const PRIVILEGE_UPDATE: KnownValue;
 
 // @public (undocumented)
-export const PRIVILEGE_UPDATE_RAW = 82n;
-
-// @public (undocumented)
 export const PRIVILEGE_VERIFY: KnownValue;
 
 // @public (undocumented)
-export const PRIVILEGE_VERIFY_RAW = 81n;
-
-// @public (undocumented)
 export const PROCESSING_VALUE: KnownValue;
-
-// @public (undocumented)
-export const PROCESSING_VALUE_RAW = 104n;
 
 // @public (undocumented)
 export const PROVENANCE: KnownValue;
@@ -522,83 +399,34 @@ export const PROVENANCE: KnownValue;
 export const PROVENANCE_GENERATOR: KnownValue;
 
 // @public (undocumented)
-export const PROVENANCE_GENERATOR_RAW = 68n;
-
-// @public (undocumented)
-export const PROVENANCE_RAW = 64n;
-
-// @public (undocumented)
 export const PSBT_TYPE: KnownValue;
-
-// @public (undocumented)
-export const PSBT_TYPE_RAW = 506n;
 
 // @public (undocumented)
 export const PSEUDOGRAPH: KnownValue;
 
 // @public (undocumented)
-export const PSEUDOGRAPH_RAW = 606n;
-
-// @public (undocumented)
 export const PUBLIC_KEY_TYPE: KnownValue;
-
-// @public (undocumented)
-export const PUBLIC_KEY_TYPE_RAW = 202n;
 
 // @public (undocumented)
 export const RECIPIENT_CONTINUATION: KnownValue;
 
-// @public (undocumented)
-export const RECIPIENT_CONTINUATION_RAW = 107n;
+// @public
+export const REGISTRY_CONSTANTS: readonly KnownValue[];
 
 // @public
-export interface RegistryEntry {
-    codepoint: number;
-    description?: string;
-    name: string;
-    type?: string;
-    uri?: string;
-}
-
-// @public
-export interface RegistryFile {
-    entries: RegistryEntry[];
-    generated?: {
-        tool?: string;
-        version?: string;
-    };
-    ontology?: {
-        name?: string;
-        source_url?: string;
-        start_code_point?: number;
-        processing_strategy?: string;
-    };
-    statistics?: unknown;
-}
+export function resolveKnownValue(value: number | bigint, store?: KnownValuesStore): KnownValue;
 
 // @public (undocumented)
 export const RESULT: KnownValue;
 
 // @public (undocumented)
-export const RESULT_RAW = 101n;
-
-// @public (undocumented)
 export const SALT: KnownValue;
-
-// @public (undocumented)
-export const SALT_RAW = 15n;
 
 // @public (undocumented)
 export const SEED_TYPE: KnownValue;
 
 // @public (undocumented)
-export const SEED_TYPE_RAW = 200n;
-
-// @public (undocumented)
 export const SELF: KnownValue;
-
-// @public (undocumented)
-export const SELF_RAW = 706n;
 
 // @public (undocumented)
 export const SENDER: KnownValue;
@@ -607,115 +435,58 @@ export const SENDER: KnownValue;
 export const SENDER_CONTINUATION: KnownValue;
 
 // @public (undocumented)
-export const SENDER_CONTINUATION_RAW = 106n;
-
-// @public (undocumented)
-export const SENDER_RAW = 105n;
-
-// @public (undocumented)
 export const SERVICE: KnownValue;
-
-// @public (undocumented)
-export const SERVICE_RAW = 66n;
 
 // @public (undocumented)
 export const SIGNED: KnownValue;
 
 // @public (undocumented)
-export const SIGNED_RAW = 3n;
-
-// @public (undocumented)
 export const SOURCE: KnownValue;
-
-// @public (undocumented)
-export const SOURCE_RAW = 702n;
 
 // @public (undocumented)
 export const SOURCE_TARGET_GRAPH: KnownValue;
 
 // @public (undocumented)
-export const SOURCE_TARGET_GRAPH_RAW = 601n;
-
-// @public (undocumented)
 export const SSKR_SHARE: KnownValue;
-
-// @public (undocumented)
-export const SSKR_SHARE_RAW = 6n;
-
-// @public
-export const TAG_KNOWN_VALUE: TagValue;
 
 // @public (undocumented)
 export const TARGET: KnownValue;
 
 // @public (undocumented)
-export const TARGET_RAW = 703n;
-
-// @public (undocumented)
 export const TEST_NET_VALUE: KnownValue;
-
-// @public (undocumented)
-export const TEST_NET_VALUE_RAW = 402n;
 
 // @public (undocumented)
 export const TEZOS_VALUE: KnownValue;
 
 // @public (undocumented)
-export const TEZOS_VALUE_RAW = 303n;
-
-// @public (undocumented)
 export const TREE: KnownValue;
-
-// @public (undocumented)
-export const TREE_RAW = 609n;
 
 // @public (undocumented)
 export const UNIT: KnownValue;
 
 // @public (undocumented)
-export const UNIT_RAW = 0n;
-
-// @public (undocumented)
 export const UNKNOWN_VALUE: KnownValue;
-
-// @public (undocumented)
-export const UNKNOWN_VALUE_RAW = 17n;
 
 // @public (undocumented)
 export const VALID_FROM: KnownValue;
 
 // @public (undocumented)
-export const VALID_FROM_RAW = 21n;
-
-// @public (undocumented)
 export const VALID_UNTIL: KnownValue;
-
-// @public (undocumented)
-export const VALID_UNTIL_RAW = 22n;
 
 // @public (undocumented)
 export const VALUE: KnownValue;
 
 // @public (undocumented)
-export const VALUE_RAW = 25n;
-
-// @public (undocumented)
 export const VENDOR: KnownValue;
-
-// @public (undocumented)
-export const VENDOR_RAW = 51n;
 
 // @public (undocumented)
 export const VERIFIABLE_AT: KnownValue;
 
 // @public (undocumented)
-export const VERIFIABLE_AT_RAW = 27n;
-
-// @public (undocumented)
 export const VERSION_VALUE: KnownValue;
 
-// @public (undocumented)
-export const VERSION_VALUE_RAW = 18n;
+// @public
+export function withKnownValues<T>(action: (store: KnownValuesStore) => T): T;
 
 // (No @packageDocumentation comment for this package)
 

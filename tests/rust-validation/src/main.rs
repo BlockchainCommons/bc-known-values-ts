@@ -84,6 +84,11 @@ fn expected_divergence(r: &serde_json::Value, got: &str, want: &str) -> Option<&
     if r["k"] == "decode" && got.starts_with("throw:") && want.starts_with("throw:") {
         return Some("E1");
     }
+    // D3: TypeScript's `fromCbor` accepts the untagged form; the reference's
+    // `TryFrom<CBOR>` requires the tag.
+    if r["k"] == "decode" && !r["hex"].as_str().unwrap_or("").starts_with("d9") && got.starts_with("throw:") && !want.starts_with("throw:") {
+        return Some("D3");
+    }
     None
 }
 

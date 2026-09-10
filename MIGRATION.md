@@ -69,3 +69,38 @@ shared type is resolved:
 - The public API: every exported name, signature and type is identical.
 - The wire format. Encodings produced by `@bcts/known-values` decode here, and the reverse.
 - Parity with the Rust reference implementation. See [`RUST_DIVERGENCES.md`](./RUST_DIVERGENCES.md).
+
+---
+
+# Migrating to the redesigned API
+
+`1.0.0-beta.1` also redesigns the TypeScript surface. **Every wire byte is
+unchanged**: tagged CBOR, digests and the registry names are verified against
+a frozen pre-redesign baseline and against `known-values-rust` 0.15.5 by
+`tests/rust-validation`.
+
+| Before | After |
+|---|---|
+| `kv.value()` (number, throws above 2^53) | `kv.value` (`number`, or `bigint` above 2^53) |
+| `kv.valueBigInt()`, `kv.assignedName()`, `kv.name()` | `kv.valueBigInt`, `kv.assignedName`, `kv.name` (getters) |
+| `kv.hashCode()` | gone (compare with `equals` or by `value`) |
+| `kv.taggedCbor()`, `kv.toCborData()`, `kv.taggedCborData()` | `kv.toCbor()`, `kv.toCbor().toData()` |
+| `KnownValue.fromTaggedCbor(c)`, `fromUntaggedCbor(c)`, instance `fromX` | `KnownValue.fromCbor(c)` (tagged or untagged) or `KnownValue.codec` |
+| `KnownValue.fromCborData(bytes)` | `KnownValue.fromCbor(decodeCbor(bytes))` or `decodeWith(bytes, KnownValue.codec)` |
+| decode errors: bare `Error` | dcbor `CborError` with a code (`WrongTag`, `WrongType`, …) |
+| `store.insert(kv)` | `store.register(kv)` |
+| `store.knownValueForValue(v)`, `store.knownValueNamed(n)` | `store.byValue(v)`, `store.byName(n)` |
+| `store.assignedName(kv)`, `store.name(kv)` | `store.assignedNameOf(kv)`, `store.nameOf(kv)` |
+| `KnownValuesStore.knownValueForRawValue(v, store?)` | `resolveKnownValue(v, store?)` (global store by default) |
+| `KnownValuesStore.knownValueForName(n, store?)` | `store?.byName(n)` |
+| `KnownValuesStore.nameForKnownValue(kv, store?)` | `store?.nameOf(kv) ?? kv.name` |
+| `KNOWN_VALUES.get()`, `LazyKnownValues` | `getGlobalKnownValuesStore()`, `withKnownValues(fn)` |
+| `IS_A_RAW` … (104 `bigint` constants) | `KNOWN_VALUE_CODEPOINTS.IS_A` … (one `as const` table of `number`s) |
+| `loadBundledRegistries()`, `RegistryEntry`, `RegistryFile` | `BUNDLED_REGISTRY` (`readonly [codepoint, name][]`, generated from `data/*.json`) |
+| `TAG_KNOWN_VALUE`, `KNOWN_VALUE_TAG` | `KNOWN_VALUE` from `@blockchaincommons/tags` |
+
+New: `KnownValue.from(v, name?)`, `store.size`, `store.values()`, `for (const kv of store)`,
+`REGISTRY_CONSTANTS`. The store also gains a second-argument-free
+`resolveKnownValue`. The JSON registries are no longer imported at runtime
+(no `resolveJsonModule` needed); `scripts/generate-registry.mjs` regenerates
+`src/registry.generated.ts` from them.

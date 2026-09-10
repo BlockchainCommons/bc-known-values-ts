@@ -2,6 +2,27 @@
   {
     "name": "ESM entry (import *), minified + gzipped",
     "path": "dist/index.mjs",
-    "limit": "204 kB"
+    "limit": "48 kB"
+  },
+  {
+    "name": "root entry, KnownValue + IS_A only (tree-shaken, siblings external)",
+    "path": "dist/index.mjs",
+    "import": "{ KnownValue, IS_A }",
+    "ignore": [
+      "@blockchaincommons/components",
+      "@blockchaincommons/dcbor",
+      "@blockchaincommons/tags"
+    ],
+    "limit": "2 kB"
+  },
+  {
+    "name": "root entry, package's own code (siblings external)",
+    "path": "dist/index.mjs",
+    "ignore": [
+      "@blockchaincommons/components",
+      "@blockchaincommons/dcbor",
+      "@blockchaincommons/tags"
+    ],
+    "limit": "28 kB"
   }
 ]

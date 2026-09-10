@@ -22,12 +22,32 @@ import {
 const here = dirname(fileURLToPath(import.meta.url));
 const BASELINE_SHA256 = "8e71c50e6115269bba68406e28b0a242515eb4e6b6077243b86dd0cc1344d95e";
 
-/** Tombstones: the only allowed differences. None yet. */
+/**
+ * Tombstones: the only allowed differences.
+ * T1 (landed with W2): decoding rejects through dcbor's typed accessors, so
+ *    a rejected decode is a `CborError` (with a code) where the baseline
+ *    threw a bare `Error`.
+ * T2 (landed with W2): `KnownValue.fromCbor` accepts the untagged form
+ *    (the bare unsigned integer), where the baseline's `fromCborData`
+ *    required the tag.
+ */
 const TOMBSTONES: {
   id: string;
   landed: boolean;
   matches: (r: Recipe, baselineOutcome: string, currentOutcome: string) => boolean;
-}[] = [];
+}[] = [
+  {
+    id: "T1",
+    landed: true,
+    matches: (r, a, b) => r.k === "decode" && a === "throw:Error" && b === "throw:CborError",
+  },
+  {
+    id: "T2",
+    landed: true,
+    matches: (r, a, b) =>
+      r.k === "decode" && !r.hex.startsWith("d9") && a === "throw:Error" && !b.startsWith("throw:"),
+  },
+];
 
 const baseline = baselineAdapterFor(baselineMod);
 const current = redesignedAdapterFor(src);

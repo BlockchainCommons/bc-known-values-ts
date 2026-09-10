@@ -22,7 +22,6 @@
 
     /* Module Resolution */
     "moduleResolution": "bundler",
-    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
 
     /* Emit */

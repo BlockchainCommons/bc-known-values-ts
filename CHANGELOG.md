@@ -4,6 +4,8 @@
 
 ### Changed
 
+- **Redesigned API** (see MIGRATION.md): getters (`value`, `valueBigInt`, `assignedName`, `name`), `toCbor()`/`fromCbor()`/`codec` over the dcbor codable contract, `KnownValuesStore.register/byValue/byName/assignedNameOf/nameOf` with `size` and iteration, `getGlobalKnownValuesStore()`/`withKnownValues()`/`resolveKnownValue()` for `KNOWN_VALUES.get()` and the static helpers, `KNOWN_VALUE_CODEPOINTS` for the 104 `_RAW` constants, `BUNDLED_REGISTRY` generated from the JSON registries (no JSON at runtime; the root entry shrinks from 166 kB to 42 kB, and `KnownValue` + a constant tree-shake to 1.3 kB).
+- `KnownValue` rejects negative and >64-bit codepoints with `RangeError`; decode errors are dcbor `CborError`s; `fromCbor` accepts the untagged form.
 - Ported to the canonical `@blockchaincommons/dcbor`, `@blockchaincommons/tags` (for the tag) and the redesigned `@blockchaincommons/components`; every wire byte unchanged, verified against a frozen baseline and against `known-values-rust` 0.15.5 (`tests/rust-validation`, see `RUST_DIVERGENCES.md`).
 
 Extracted from the [`paritytech/bcts`](https://github.com/paritytech/bcts) monorepo, where this library was published as `@bcts/known-values`. The public API is unchanged; see [MIGRATION.md](./MIGRATION.md).

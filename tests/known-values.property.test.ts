@@ -16,9 +16,9 @@ describe("KnownValue properties", () => {
     fc.assert(
       fc.property(u64, (v) => {
         const kv = new KnownValue(v);
-        const back = KnownValue.fromCborData(kv.toCborData());
-        const back2 = KnownValue.fromUntaggedCbor(decodeCbor(encodeCbor(kv.untaggedCbor())));
-        return back.equals(kv) && back2.equals(kv) && back.valueBigInt() === v;
+        const back = KnownValue.fromCbor(decodeCbor(kv.toCbor().toData()));
+        const back2 = KnownValue.fromCbor(decodeCbor(encodeCbor(kv.untaggedCbor())));
+        return back.equals(kv) && back2.equals(kv) && back.valueBigInt === v;
       }),
       { numRuns: 300 },
     );
@@ -37,11 +37,9 @@ describe("KnownValue properties", () => {
       fc.property(fc.uniqueArray(fc.nat(2000), { minLength: 1, maxLength: 30 }), (values) => {
         const pairs = values.map((v) => [v, `n${v}`] as const);
         const store = new KnownValuesStore();
-        for (const [v, n] of pairs) store.insert(new KnownValue(v, n));
+        for (const [v, n] of pairs) store.register(new KnownValue(v, n));
         return pairs.every(
-          ([v, n]) =>
-            store.knownValueForValue(v)?.name() === n &&
-            store.knownValueNamed(n)?.valueBigInt() === BigInt(v),
+          ([v, n]) => store.byValue(v)?.name === n && store.byName(n)?.valueBigInt === BigInt(v),
         );
       }),
       { numRuns: 100 },
