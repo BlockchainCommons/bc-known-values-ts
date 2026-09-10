@@ -1,0 +1,95 @@
+# Changelog
+
+## 1.0.0-beta.1
+
+Extracted from the [`paritytech/bcts`](https://github.com/paritytech/bcts) monorepo, where this library was published as `@bcts/known-values`. The public API is unchanged; see [MIGRATION.md](./MIGRATION.md).
+
+---
+
+## History as `@bcts/known-values`
+
+## [1.0.0-beta.6] - 2026-07-29
+
+### Changed
+
+- Workspace version bump
+
+## [1.0.0-beta.5] - 2026-07-01
+
+### Changed
+
+- Workspace version bump
+
+## [1.0.0-beta.4] - 2026-06-28
+
+### Changed
+
+- Dependency sync
+
+## [1.0.0-beta.3] - 2026-06-22
+
+### Changed
+
+- Dependencies bump
+
+## [1.0.0-beta.2] - 2026-06-16
+
+### Changed
+
+- Dependencies bump
+
+## [1.0.0-beta.1] - 2026-05-27
+
+### Changed
+
+- Workspace version bump
+
+## [1.0.0-beta.0] - 2026-04-27
+
+### Changed
+
+- Workspace version bump
+
+## [1.0.0-alpha.23] - 2026-04-24
+
+### Changed
+
+- Removed redundant `as RegistryFile` casts on bundled-registry imports and the `as number | bigint` cast in `KnownValue.fromCbor`
+
+## [1.0.0-alpha.22] - 2026-03-01
+
+### Changed
+
+- Workspace version bump
+
+## [1.0.0-alpha.21] - 2026-02-27
+
+### Changed
+
+- Workspace version bump
+
+## [1.0.0-alpha.20] - 2026-02-12
+
+### Added
+
+- **VALUE** known value (codepoint 25) — the object is the value of the subject
+- **ATTESTATION** known value (codepoint 26) — the object is an attestation of the subject
+- **VERIFIABLE_AT** known value (codepoint 27) — the object is a date at which the subject can be verified
+- Raw constants `VALUE_RAW`, `ATTESTATION_RAW`, `VERIFIABLE_AT_RAW` for pattern matching
+- Registry entries in bundled JSON for codepoints 25, 26, 27
+
+## [1.0.0-alpha.19] - 2026-02-05
+
+### Changed
+
+- Workspace version bump
+
+## [1.0.0-alpha.18] - 2025-01-31
+
+### Added
+
+- **Bundled registries** (`bundled-registries.ts`): 14 JSON registry files are now imported at build time and embedded in the bundle, providing all known values without filesystem access
+- **`SELF` known value**: Added `SELF` (706) to the registry, now resolved via bundled BC registry
+- **`KnownValuesStore`**: New dedicated store class for managing known value collections
+- **`data/` directory**: Ships 14 JSON registry files (Blockchain Commons, RDF, RDFS, OWL2, Dublin Core Elements, Dublin Core Terms, FOAF, SKOS, Solid, W3C VC, GS1, Schema.org, Community)
+- **New exports**: `loadBundledRegistries()`, `RegistryEntry` and `RegistryFile` types
