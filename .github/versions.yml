@@ -1,0 +1,8 @@
+# Version map: TypeScript package -> Reference implementation
+# Used by workflow automation to track upstream reference versions.
+packages:
+  known-values:
+    npm: "@blockchaincommons/known-values"
+    repo: "BlockchainCommons/known-values-rust"
+    version: "0.15.5"
+    commit: "c1eefb4b6c2c9855802e2649ef70bad9beed6f35"
