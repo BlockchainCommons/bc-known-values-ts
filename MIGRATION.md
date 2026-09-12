@@ -1,10 +1,5 @@
 # Migrating from `@bcts/known-values` to `@blockchaincommons/known-values`
 
-`@blockchaincommons/known-values` is the canonical home of this library. It was extracted from the
-[`paritytech/bcts`](https://github.com/paritytech/bcts) monorepo, where it was
-published as `@bcts/known-values`, into its own Blockchain Commons repository at
-[`BlockchainCommons/known-values-ts`](https://github.com/BlockchainCommons/bc-known-values-ts).
-
 `1.0.0-beta.1` is both the extraction and the redesign: the package name
 changes **and** the API changes (the second part of this guide). The wire —
 tagged CBOR, digests, registry names — does not. `@bcts/known-values` remains
