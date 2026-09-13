@@ -42,6 +42,7 @@ new KnownValue(9999).name; // "9999"
 // Tagged CBOR (#6.40000) and the digest envelopes use.
 IS_A.toCbor().toData(); // d9 9c40 01
 KnownValue.fromCbor(decodeCbor(IS_A.toCbor().toData())).equals(IS_A); // true
+KnownValue.fromUntaggedCbor(IS_A.untaggedCbor()).equals(IS_A); // the bare integer: the tag's content
 IS_A.digest().toHex();
 
 // The global registry: the BCR-2023-002 constants plus the bundled
@@ -53,8 +54,9 @@ registry.byValue(4)?.name; // "note"
 resolveKnownValue(4).equals(NOTE); // true
 registry.byValue(4) === NOTE; // false — the registry's object, equal to the constant
 
-// Values and the tables are frozen; a codepoint that is not a safe-integer
-// number or a bigint in 0 ..= 2^64 - 1 is a RangeError.
+// KnownValue instances and table containers are frozen (bundled rows are not).
+// Codepoints must be integer numbers or bigints in 0 ..= 2^64 - 1.
+// Use bigint for exact codepoints above Number.MAX_SAFE_INTEGER.
 
 // Codepoints as literals, for switch statements.
 switch (IS_A.value) {
@@ -68,12 +70,15 @@ mine.register(new KnownValue(1000, "myPredicate"));
 mine.byName("myPredicate")?.value; // 1000
 ```
 
+Runnable examples live in the [`examples/`](https://github.com/BlockchainCommons/bc-known-values-ts/tree/master/examples) directory.
+
 ## Status - Beta
 
 `bc-known-values-ts` is currently under active development and in beta testing. It should not be used for production tasks until it has had further testing and auditing. See [Blockchain Commons' Development Phases](https://github.com/BlockchainCommons/Community/blob/master/release-path.md).
 
 ### Version History
 
+- **1.0.0-beta.2 (September 12, 2026)** - `KnownValue.fromCbor` and the codec require tag 40000, as the reference does; `KnownValue.fromUntaggedCbor` decodes the bare integer.
 - **1.0.0-beta.1 (September 9, 2026)** - Initial beta implementation.
 
 ### Roadmap
@@ -88,7 +93,7 @@ mine.byName("myPredicate")?.value; // 1000
 To build and work on this library, you'll need the following tools:
 
 - [Node.js](https://nodejs.org/) >= 22.12 - JavaScript runtime.
-- [Bun](https://bun.sh/) - used to install dependencies and run scripts (any node package manager works).
+- [Bun](https://bun.sh/) - used to install dependencies and run the TypeScript maintenance scripts.
 - [TypeScript](https://www.typescriptlang.org/) >= 5.7 - language and type checker.
 
 ### Derived from ...

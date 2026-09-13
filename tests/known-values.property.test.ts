@@ -11,12 +11,12 @@ import { KnownValue, KnownValuesStore } from "../src/index.js";
 const u64 = fc.bigInt({ min: 0n, max: (1n << 64n) - 1n });
 
 describe("KnownValue properties", () => {
-  it("round-trips through tagged and untagged CBOR", () => {
+  it("round-trips through tagged CBOR, and the content through fromUntaggedCbor", () => {
     fc.assert(
       fc.property(u64, (v) => {
         const kv = new KnownValue(v);
         const back = KnownValue.fromCbor(decodeCbor(kv.toCbor().toData()));
-        const back2 = KnownValue.fromCbor(decodeCbor(encodeCbor(kv.untaggedCbor())));
+        const back2 = KnownValue.fromUntaggedCbor(decodeCbor(encodeCbor(kv.untaggedCbor())));
         return back.equals(kv) && back2.equals(kv) && back.valueBigInt === v;
       }),
       { numRuns: 300 },

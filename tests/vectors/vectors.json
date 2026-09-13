@@ -71353,7 +71353,7 @@
     "k": "decode",
     "hex": "01"
    },
-   "expect": "d99c4001|2be2d79b306a21ff8e3e6bd3d1c2c6c74ff4a693b1e7ba3a0f40cdfb9ea493f8|1|-"
+   "expect": "throw:CborError"
   },
   {
    "name": "decode 1818",
@@ -71361,7 +71361,7 @@
     "k": "decode",
     "hex": "1818"
    },
-   "expect": "d99c401818|06af251d04f55704eea454098c81818936aae430165ec754326fd3983d85b7a3|24|-"
+   "expect": "throw:CborError"
   },
   {
    "name": "decode d99c4020",

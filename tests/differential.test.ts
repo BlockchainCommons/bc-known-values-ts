@@ -27,9 +27,9 @@ const BASELINE_SHA256 = "64a82be2f4975e38383dd4cd0089d0185e4d440dc189d6b520ed4c8
  * Tombstones: the only allowed differences.
  * T1: decoding rejects through dcbor's typed accessors, so a rejected
  *    decode is a `CborError` (with a code) where the baseline threw a bare
- *    `Error`.
- * T2: `KnownValue.fromCbor` accepts the untagged form (the bare unsigned
- *    integer), where the baseline's `fromCborData` required the tag.
+ *    `Error`. This covers the untagged form too: both reject it (the
+ *    reference's `TryFrom<CBOR>` requires the tag; `fromUntaggedCbor` is the
+ *    explicit entry point for the content).
  * T2b: a negative or above-64-bit codepoint is a `RangeError` where the
  *    baseline accepted it.
  * T3 (B2): `byName("")` answers the unit value (`0||`) where the baseline
@@ -51,12 +51,6 @@ const TOMBSTONES: {
     id: "T1",
     landed: true,
     matches: (r, a, b) => r.k === "decode" && a === "throw:Error" && b === "throw:CborError",
-  },
-  {
-    id: "T2",
-    landed: true,
-    matches: (r, a, b) =>
-      r.k === "decode" && !r.hex.startsWith("d9") && a === "throw:Error" && !b.startsWith("throw:"),
   },
   {
     id: "T2b-range-check",

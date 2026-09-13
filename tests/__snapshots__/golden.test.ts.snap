@@ -282,7 +282,7 @@ exports[`golden: registry > names for 0..120 1`] = `
 
 exports[`golden: rejections > decode table 1`] = `
 [
-  "01: 1",
+  "01: throw CborError: the decoded CBOR value was not the expected type",
   "d99c4020: throw CborError: the decoded CBOR value was not the expected type",
   "d99c4161: throw CborError: early end of CBOR data",
   "d8640c: throw CborError: expected CBOR tag 40000, but got 100",
