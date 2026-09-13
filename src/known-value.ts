@@ -11,7 +11,6 @@ import {
   type CborTagged,
   type Tag,
   type ToCbor,
-  asTaggedValue,
   cbor,
   expectTaggedContent,
   expectUnsigned,
@@ -23,7 +22,7 @@ import { Digest, type DigestProvider } from "@blockchaincommons/components";
 /** What a known value can be built from. */
 export type KnownValueInput = number | bigint;
 
-/** The one domain check: a `number` that is a safe integer, or a `bigint`, in `0 ..= 2⁶⁴ − 1`. */
+/** The one domain check: an integer `number`, or a `bigint`, in `0 ..= 2⁶⁴ − 1`. */
 export function toBigInt(value: KnownValueInput): bigint {
   let v: bigint;
   if (typeof value === "bigint") {
@@ -60,8 +59,8 @@ const CBOR_TAGS: readonly Tag[] = /*#__PURE__*/ Object.freeze([TAG_KNOWN_VALUE])
  * `getGlobalKnownValuesStore().byValue(1) === IS_A` is `false` while
  * `.equals(IS_A)` is `true`. Instances are frozen (a constant cannot be
  * renamed process-wide) and every constructor argument is checked: the
- * codepoint must be a safe-integer `number` or a `bigint` in
- * `0 ..= 2⁶⁴ − 1` (a `bigint` above 2⁵³), the name a `string`.
+ * codepoint must be an integer `number` or a `bigint` in
+ * `0 ..= 2⁶⁴ − 1` (use `bigint` for exact codepoints above the safe number range), the name a `string`.
  *
  * Two module graphs (CommonJS and ESM in one process) each have their own
  * class and their own global registry: `instanceof` across them is `false`,
@@ -74,7 +73,7 @@ export class KnownValue implements ToCbor, CborTagged, DigestProvider {
   /**
    * @param value - The codepoint (an unsigned 64-bit integer)
    * @param assignedName - The name the registry gives it, if any
-   * @throws RangeError when `value` is not a safe-integer `number` or a `bigint` in `0 ..= 2⁶⁴ − 1`, or `assignedName` is not a string
+   * @throws RangeError when `value` is not an integer `number` or a `bigint` in `0 ..= 2⁶⁴ − 1`, or `assignedName` is not a string
    */
   constructor(value: KnownValueInput, assignedName?: string) {
     this._value = toBigInt(value);
@@ -132,19 +131,15 @@ export class KnownValue implements ToCbor, CborTagged, DigestProvider {
   }
 
   /**
-   * Tagged-CBOR codec; `decode` also accepts the untagged form (the bare
-   * unsigned integer), which the reference's decoder does not — recorded in
-   * `RUST_DIVERGENCES.md`.
+   * Tagged-CBOR codec. `decode` requires `#6.40000(n)` — the tag is part of
+   * the type, as in the reference's `TryFrom<CBOR>`; use `fromUntaggedCbor`
+   * for the bare unsigned integer.
    */
   static get codec(): CborCodec<KnownValue> {
     return (CODEC ??= {
       tags: [TAG_KNOWN_VALUE],
       encode: (kv) => kv.toCbor(),
-      decode: (c) => {
-        const content =
-          asTaggedValue(c) === undefined ? c : expectTaggedContent(c, TAG_KNOWN_VALUE.value);
-        return new KnownValue(expectUnsigned(content));
-      },
+      decode: (c) => KnownValue.fromUntaggedCbor(expectTaggedContent(c, TAG_KNOWN_VALUE.value)),
     });
   }
 
@@ -164,11 +159,25 @@ export class KnownValue implements ToCbor, CborTagged, DigestProvider {
   }
 
   /**
-   * Decode tagged (`#6.40000(n)`) or untagged (`n`) CBOR.
+   * Decode `#6.40000(n)` (the reference's `TryFrom<CBOR>`).
    *
-   * @throws CborError (dcbor's, with a code: `WrongTag`, `WrongType`, …) when the CBOR is not a known value
+   * @throws CborError (dcbor's, with a code) — `WrongType` for an untagged value or a
+   *   non-integer content, `WrongTag` for another tag; `RangeError` never (the wire cannot
+   *   carry an out-of-range unsigned)
    */
   static fromCbor(cborValue: Cbor): KnownValue {
     return KnownValue.codec.decode(cborValue);
+  }
+
+  /**
+   * Decode the bare unsigned integer `n` — the content of tag 40000 (the
+   * reference's `from_untagged_cbor`), as a tag summariser or a decoder that has
+   * already stripped the tag holds it.
+   *
+   * @throws CborError `WrongType` when the CBOR is not an unsigned integer (a negative,
+   *   a tagged value, a bignum)
+   */
+  static fromUntaggedCbor(cborValue: Cbor): KnownValue {
+    return new KnownValue(expectUnsigned(cborValue));
   }
 }

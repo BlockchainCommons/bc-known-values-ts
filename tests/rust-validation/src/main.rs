@@ -84,7 +84,8 @@ fn outcome_codepoint(outcome: &str) -> Option<u64> {
 /// never registers (an upstream omission); the port registers them.
 /// D2: the reference accepts a negative integer inside tag 40000 and wraps
 /// it to u64; TypeScript rejects it.
-/// E1: both reject a decode with different error taxonomies.
+/// E1: both reject a decode with different error taxonomies (this includes
+/// the untagged form, which both sides reject: the tag is part of the type).
 fn expected_divergence(r: &serde_json::Value, got: &str, want: &str) -> Option<&'static str> {
     if r["k"] == "lookup" && got == "-" && want != "-" {
         return match outcome_codepoint(want) {
@@ -98,11 +99,6 @@ fn expected_divergence(r: &serde_json::Value, got: &str, want: &str) -> Option<&
     }
     if r["k"] == "decode" && got.starts_with("throw:") && want.starts_with("throw:") {
         return Some("E1");
-    }
-    // D3: TypeScript's `fromCbor` accepts the untagged form; the reference's
-    // `TryFrom<CBOR>` requires the tag.
-    if r["k"] == "decode" && !r["hex"].as_str().unwrap_or("").starts_with("d9") && got.starts_with("throw:") && !want.starts_with("throw:") {
-        return Some("D3");
     }
     None
 }

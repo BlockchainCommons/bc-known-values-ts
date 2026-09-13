@@ -37,7 +37,7 @@ export function withKnownValues<T>(action: (store: KnownValuesStore) => T): T {
  * The registered value for a codepoint, or a bare `KnownValue` when the
  * store (the global one by default) does not know it.
  *
- * @throws RangeError when `value` is not a safe-integer `number` or a `bigint` in `0 ..= 2⁶⁴ − 1`
+ * @throws RangeError when `value` is not an integer `number` or a `bigint` in `0 ..= 2⁶⁴ − 1`
  */
 export function resolveKnownValue(
   value: KnownValueInput,

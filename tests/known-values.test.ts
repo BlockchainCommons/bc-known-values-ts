@@ -250,9 +250,9 @@ describe("KnownValue CBOR Encoding", () => {
 });
 
 describe("KnownValue CBOR Decoding", () => {
-  test("should decode from untagged CBOR", () => {
+  test("should decode the untagged content with fromUntaggedCbor", () => {
     const cborValue = cbor(42);
-    const kv = KnownValue.fromCbor(cborValue);
+    const kv = KnownValue.fromUntaggedCbor(cborValue);
 
     expect(kv.value).toBe(42);
     expect(kv.assignedName).toBeUndefined();
@@ -294,16 +294,16 @@ describe("KnownValue CBOR Decoding", () => {
     expect(KnownValue.fromCbor(decodeCbor(hexToBytes("d99c40190100"))).value).toBe(256);
   });
 
-  test("should auto-detect tagged vs untagged with fromCbor", () => {
+  test("fromCbor requires the tag; the reference's TryFrom<CBOR>", () => {
     // Tagged
     const tagged = taggedValue(40000, 42);
     const kv1 = KnownValue.fromCbor(tagged);
     expect(kv1.value).toBe(42);
 
-    // Untagged
+    // Untagged: rejected, as the reference rejects it.
     const untagged = cbor(42);
-    const kv2 = KnownValue.fromCbor(untagged);
-    expect(kv2.value).toBe(42);
+    expect(() => KnownValue.fromCbor(untagged)).toThrow(/expected type/);
+    expect(() => KnownValue.codec.decode(untagged)).toThrow(/expected type/);
   });
 
   test("should throw on wrong tag", () => {
@@ -316,15 +316,18 @@ describe("KnownValue CBOR Decoding", () => {
     expect(() => KnownValue.fromCbor(text)).toThrow(/unsigned|type/i);
   });
 
-  test("instance methods should delegate to static methods", () => {
+  test("the tagged and the untagged decoder agree on the codepoint", () => {
     const tagged = taggedValue(40000, 99);
     const untagged = cbor(99);
 
     const decoded1 = KnownValue.fromCbor(tagged);
-    const decoded2 = KnownValue.fromCbor(untagged);
+    const decoded2 = KnownValue.fromUntaggedCbor(untagged);
 
     expect(decoded1.value).toBe(99);
     expect(decoded2.value).toBe(99);
+    expect(decoded1.equals(decoded2)).toBe(true);
+    // The untagged decoder does not strip a tag.
+    expect(() => KnownValue.fromUntaggedCbor(tagged)).toThrow(/expected type/);
   });
 });
 

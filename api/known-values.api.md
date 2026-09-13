@@ -259,6 +259,7 @@ export class KnownValue implements ToCbor, CborTagged, DigestProvider {
     equals(other: KnownValue): boolean;
     static from(value: KnownValueInput, assignedName?: string): KnownValue;
     static fromCbor(cborValue: Cbor): KnownValue;
+    static fromUntaggedCbor(cborValue: Cbor): KnownValue;
     get name(): string;
     toCbor(): Cbor;
     toString(): string;

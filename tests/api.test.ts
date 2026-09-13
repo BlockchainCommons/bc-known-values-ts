@@ -3,7 +3,13 @@
  * iteration and size, the global registry helpers.
  */
 import { describe, it, expect } from "vitest";
-import { decodeCbor, encodeCbor, decodeWith, CborError } from "@blockchaincommons/dcbor";
+import {
+  decodeCbor,
+  encodeCbor,
+  decodeWith,
+  hexToBytes as hex,
+  CborError,
+} from "@blockchaincommons/dcbor";
 import {
   KnownValue,
   KnownValuesStore,
@@ -17,6 +23,16 @@ import {
   NOTE,
 } from "../src/index.js";
 
+/** The dcbor error code a decode fails with. */
+function codeOf(f: () => unknown): string | undefined {
+  try {
+    f();
+    return undefined;
+  } catch (e) {
+    return CborError.isCborError(e) ? e.code : `not a CborError: ${String(e)}`;
+  }
+}
+
 describe("KnownValue", () => {
   it("from and value narrowing", () => {
     expect(KnownValue.from(7, "seven").name).toBe("seven");
@@ -29,14 +45,28 @@ describe("KnownValue", () => {
     expect(String(IS_A)).toBe("isA");
     expect(IS_A.equals(new KnownValue(1, "other"))).toBe(true);
   });
-  it("codec encodes tagged and decodes both forms", () => {
+  it("codec encodes tagged and decodes the tagged form only", () => {
     const c = KnownValue.codec;
     expect(c.tags?.[0]?.value).toBe(40000);
     expect(encodeCbor(c.encode(IS_A))).toEqual(IS_A.toCbor().toData());
     expect(decodeWith(IS_A.toCbor().toData(), c).equals(IS_A)).toBe(true);
-    expect(c.decode(IS_A.untaggedCbor()).equals(IS_A)).toBe(true);
     expect(IS_A.cborTags()[0]?.name).toBe("known-value");
-    expect(() => KnownValue.fromCbor(decodeCbor(new Uint8Array([0x20])))).toThrow(CborError);
+    // The reference's `TryFrom<CBOR>`: the tag is part of the type.
+    expect(() => c.decode(IS_A.untaggedCbor())).toThrow(CborError);
+    expect(codeOf(() => KnownValue.fromCbor(IS_A.untaggedCbor()))).toBe("WrongType");
+    expect(codeOf(() => KnownValue.fromCbor(decodeCbor(hex("d8640c"))))).toBe("WrongTag");
+    expect(codeOf(() => KnownValue.fromCbor(decodeCbor(hex("d99c4020"))))).toBe("WrongType");
+  });
+  it("fromUntaggedCbor decodes the content of tag 40000", () => {
+    expect(KnownValue.fromUntaggedCbor(IS_A.untaggedCbor()).equals(IS_A)).toBe(true);
+    expect(KnownValue.fromUntaggedCbor(decodeCbor(hex("1818"))).value).toBe(24);
+    expect(KnownValue.fromUntaggedCbor(decodeCbor(hex("1bffffffffffffffff"))).valueBigInt).toBe(
+      2n ** 64n - 1n,
+    );
+    // Not an unsigned integer: a negative, the tagged form, a bignum.
+    expect(codeOf(() => KnownValue.fromUntaggedCbor(decodeCbor(hex("20"))))).toBe("WrongType");
+    expect(codeOf(() => KnownValue.fromUntaggedCbor(IS_A.toCbor()))).toBe("WrongType");
+    expect(codeOf(() => KnownValue.fromUntaggedCbor(decodeCbor(hex("c24100"))))).toBe("WrongType");
   });
 });
 

@@ -1,11 +1,6 @@
 # Migrating from `@bcts/known-values` to `@blockchaincommons/known-values`
 
-`1.0.0-beta.1` is both the extraction and the redesign: the package name
-changes **and** the API changes (the second part of this guide). The wire —
-tagged CBOR, digests, registry names — does not. `@bcts/known-values` remains
-published for one beta cycle as a thin re-export of this package, so nothing
-breaks the moment you update, but the redesigned names below apply the moment
-you import `@blockchaincommons/known-values`.
+`@blockchaincommons/known-values` is the redesigned successor to `@bcts/known-values`.
 
 ## TL;DR checklist
 
@@ -105,7 +100,7 @@ holds*, not its names:
 | `kv.valueBigInt()`, `kv.assignedName()`, `kv.name()` | `kv.valueBigInt`, `kv.assignedName`, `kv.name` (getters) |
 | `kv.hashCode()` | gone (compare with `equals` or by `value`) |
 | `kv.taggedCbor()`, `kv.toCborData()`, `kv.taggedCborData()` | `kv.toCbor()`, `kv.toCbor().toData()` |
-| `KnownValue.fromTaggedCbor(c)`, `fromUntaggedCbor(c)`, instance `fromX` | `KnownValue.fromCbor(c)` (tagged or untagged) or `KnownValue.codec` |
+| `KnownValue.fromTaggedCbor(c)`, `fromUntaggedCbor(c)`, instance `fromX` | `KnownValue.fromCbor(c)` (tag 40000 required, as the reference's `TryFrom<CBOR>`) or `KnownValue.codec`; `KnownValue.fromUntaggedCbor(c)` for the bare integer |
 | `KnownValue.fromCborData(bytes)` | `KnownValue.fromCbor(decodeCbor(bytes))` or `decodeWith(bytes, KnownValue.codec)` |
 | decode errors: bare `Error` | dcbor `CborError` with a code (`WrongTag`, `WrongType`, …) |
 | `store.insert(kv)` | `store.register(kv)` |
@@ -122,5 +117,5 @@ holds*, not its names:
 New: `KnownValue.from(v, name?)`, `store.size`, `store.values()`, `for (const kv of store)`,
 `REGISTRY_CONSTANTS`. The store also gains a second-argument-free
 `resolveKnownValue`. The JSON registries are no longer imported at runtime
-(no `resolveJsonModule` needed); `scripts/generate-registry.mjs` regenerates
+(no `resolveJsonModule` needed); `scripts/generate-registry.ts` regenerates
 `src/registry.generated.ts` from them.

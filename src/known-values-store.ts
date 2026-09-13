@@ -47,7 +47,7 @@ export class KnownValuesStore implements Iterable<KnownValue> {
   /**
    * The registered value with this codepoint, if any.
    *
-   * @throws RangeError when `value` is not a safe-integer `number` or a `bigint` in `0 ..= 2⁶⁴ − 1`
+   * @throws RangeError when `value` is not an integer `number` or a `bigint` in `0 ..= 2⁶⁴ − 1`
    */
   byValue(value: KnownValueInput): KnownValue | undefined {
     return this._byValue.get(toBigInt(value));
