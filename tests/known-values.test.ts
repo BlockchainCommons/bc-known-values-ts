@@ -551,11 +551,14 @@ describe("Rust Parity: VALUE, ATTESTATION, VERIFIABLE_AT constants", () => {
     expect(VERIFIABLE_AT.value).toBe(KNOWN_VALUE_CODEPOINTS.VERIFIABLE_AT);
   });
 
-  test("new values should be in KNOWN_VALUES store", () => {
+  test("ATTESTATION and VERIFIABLE_AT are in the global store; VALUE is not, as in the reference", () => {
     const store = getGlobalKnownValuesStore();
-    expect(store.byName("value")?.value).toBe(25);
+    expect(store.byName("value")).toBeUndefined();
+    expect(store.byValue(25)).toBeUndefined();
     expect(store.byName("attestation")?.value).toBe(26);
     expect(store.byName("verifiableAt")?.value).toBe(27);
+    expect(VALUE.name).toBe("value");
+    expect(store.nameOf(VALUE)).toBe("value");
   });
 });
 
@@ -570,12 +573,13 @@ describe("Rust Parity: SELF constant (706)", () => {
     expect(SELF.value).toBe(KNOWN_VALUE_CODEPOINTS.SELF);
   });
 
-  test("SELF should be in default KNOWN_VALUES store via bundled registry", () => {
-    // SELF is loaded from the bundled 0_blockchain_commons_registry.json
+  test("SELF is not in the global store, as in the reference; the bundled rows name it", () => {
     const store = getGlobalKnownValuesStore();
-    const self = store.byName("Self");
-    expect(self).toBeDefined();
-    expect(self?.value).toBe(706);
+    expect(store.byName("Self")).toBeUndefined();
+    expect(store.byValue(706)).toBeUndefined();
+    const mine = new KnownValuesStore();
+    for (const [cp, name] of BUNDLED_REGISTRY) mine.register(new KnownValue(cp, name));
+    expect(mine.byName("Self")?.value).toBe(706);
   });
 });
 
@@ -600,7 +604,7 @@ describe("Registry contents", () => {
   });
   test("the workflow test row is not bundled", () => {
     expect(BUNDLED_REGISTRY.some(([cp]) => cp === 200000)).toBe(false);
-    expect(resolveKnownValue(200000).assignedName).toBeUndefined();
+    expect(resolveKnownValue(200000, getGlobalKnownValuesStore()).assignedName).toBeUndefined();
   });
   test("constants and tables are frozen", () => {
     expect(Object.isFrozen(IS_A)).toBe(true);
@@ -609,6 +613,7 @@ describe("Registry contents", () => {
     expect(Object.isFrozen(REGISTRY_CONSTANTS)).toBe(true);
     expect(Object.isFrozen(KNOWN_VALUE_CODEPOINTS)).toBe(true);
     expect(Object.isFrozen(BUNDLED_REGISTRY)).toBe(true);
+    expect(BUNDLED_REGISTRY.every((row) => Object.isFrozen(row))).toBe(true);
     expect(() => {
       (IS_A as unknown as { _assignedName: string })._assignedName = "hacked";
     }).toThrow(TypeError);

@@ -24,13 +24,16 @@ bun add @blockchaincommons/known-values
 
 ```typescript
 import {
-  KnownValue,
-  KnownValuesStore,
-  KNOWN_VALUE_CODEPOINTS,
+  DirectoryConfig,
   IS_A,
+  KNOWN_VALUE_CODEPOINTS,
+  KnownValue,
+  KnownValuesError,
+  KnownValuesStore,
   NOTE,
   getGlobalKnownValuesStore,
   resolveKnownValue,
+  setDirectoryConfig,
 } from "@blockchaincommons/known-values";
 import { decodeCbor } from "@blockchaincommons/dcbor";
 
@@ -45,18 +48,29 @@ KnownValue.fromCbor(decodeCbor(IS_A.toCbor().toData())).equals(IS_A); // true
 KnownValue.fromUntaggedCbor(IS_A.untaggedCbor()).equals(IS_A); // the bare integer: the tag's content
 IS_A.digest().toHex();
 
-// The global registry: the BCR-2023-002 constants plus the bundled
-// vocabularies (RDF, schema.org, GS1, ...), built on first use. It hands
-// out its own objects: compare with `equals` (by codepoint), never `===`.
+// The global registry, built on first use as the reference builds its
+// KNOWN_VALUES: the 102 seeded constants of BCR-2023-002 (VALUE and SELF are
+// exported with their names but not seeded, as in the reference), then the
+// `*.json` registry files of `~/.known-values`. Configure the directories
+// before the first use; an empty configuration pins the seed alone.
+setDirectoryConfig(new DirectoryConfig()); // or DirectoryConfig.withPathsAndDefault(["./registries"])
 const registry = getGlobalKnownValuesStore();
-registry.byName("schema:Thing")?.value;
 registry.byValue(4)?.name; // "note"
-resolveKnownValue(4).equals(NOTE); // true
-registry.byValue(4) === NOTE; // false — the registry's object, equal to the constant
+resolveKnownValue(4, registry).equals(NOTE); // true
+resolveKnownValue(4, undefined).name; // "4": no store, no name (the reference's `None`)
 
-// KnownValue instances and table containers are frozen (bundled rows are not).
-// Codepoints must be integer numbers or bigints in 0 ..= 2^64 - 1.
-// Use bigint for exact codepoints above Number.MAX_SAFE_INTEGER.
+// Compare with `equals` (by codepoint, across module copies), never `===`:
+// a registry file or a registration replaces the registered object.
+registry.byValue(4)?.equals(NOTE); // true
+
+// Every argument fault is a KnownValuesError; the message says what was expected.
+try {
+  new KnownValue(1.5);
+} catch (e) {
+  KnownValuesError.isKnownValuesError(e) && e.code; // "InvalidParameter"
+}
+// Codepoints must be non-negative safe integer numbers or bigints in 0 ..= 2^64 - 1;
+// use a bigint for exact codepoints above Number.MAX_SAFE_INTEGER.
 
 // Codepoints as literals, for switch statements.
 switch (IS_A.value) {
@@ -64,10 +78,12 @@ switch (IS_A.value) {
     break;
 }
 
-// Your own store.
+// Your own store, and the bundled Research vocabularies for hosts without a
+// registry directory (BUNDLED_REGISTRY, not registered by default).
 const mine = new KnownValuesStore([IS_A]);
 mine.register(new KnownValue(1000, "myPredicate"));
 mine.byName("myPredicate")?.value; // 1000
+mine.loadFromDirectory("./registries"); // the reference's load_from_directory
 ```
 
 Runnable examples live in the [`examples/`](https://github.com/BlockchainCommons/bc-known-values-ts/tree/master/examples) directory.
@@ -78,13 +94,14 @@ Runnable examples live in the [`examples/`](https://github.com/BlockchainCommons
 
 ### Version History
 
+- **1.0.0-beta.3 (September 15, 2026)** - Alignment with `known-values-rust` 0.15.5: the global registry is the seed plus the `~/.known-values` registry files (`DirectoryConfig`, `parseRegistryFile`), `KnownValuesError`, exact codepoints, negative tag content wraps, tag names from the tags store.
 - **1.0.0-beta.2 (September 12, 2026)** - `KnownValue.fromCbor` and the codec require tag 40000, as the reference does; `KnownValue.fromUntaggedCbor` decodes the bare integer.
 - **1.0.0-beta.1 (September 9, 2026)** - Initial beta implementation.
 
 ### Roadmap
 
 - Continued testing and auditing on the path from beta to a stable **1.0.0** release.
-- Continued parity with the Rust reference implementation as it evolves (see [`RUST_DIVERGENCES.md`](./RUST_DIVERGENCES.md)).
+- Continued parity with the Rust reference implementation as it evolves; every release replays the vector corpus against the published crate in both of its builds (see [`tests/rust-validation/README.md`](./tests/rust-validation/README.md)).
 
 ### Dependencies
 

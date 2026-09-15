@@ -7,18 +7,14 @@ type KnownValueInput = number | bigint;
  * A known value: a codepoint (an unsigned 64-bit integer) with, optionally,
  * the name a registry assigns it.
  *
- * **Equality is by codepoint** (`equals`), whatever the names; `===` is not
- * meaningful — the global registry hands out the object it built from the
- * bundled table, not the exported constant, so
- * `getGlobalKnownValuesStore().byValue(1) === IS_A` is `false` while
- * `.equals(IS_A)` is `true`. Instances are frozen (a constant cannot be
- * renamed process-wide) and every constructor argument is checked: the
- * codepoint must be an integer `number` or a `bigint` in
- * `0 ..= 2⁶⁴ − 1` (use `bigint` for exact codepoints above the safe number range), the name a `string`.
- *
- * Two module graphs (CommonJS and ESM in one process) each have their own
- * class and their own global registry: `instanceof` across them is `false`,
- * `equals` still holds.
+ * **Equality is by codepoint** (`equals`), whatever the names, and across
+ * module copies. Compare with `equals`: `===` may hold for the constants the
+ * global registry is seeded with but is not guaranteed, because directory
+ * entries and registrations replace the registered objects. Instances are
+ * frozen (a constant cannot be renamed process-wide) and every constructor
+ * argument is checked: the codepoint must be a non-negative safe integer
+ * `number` or a `bigint` in `0 ..= 2⁶⁴ − 1` (use `bigint` for exact
+ * codepoints above the safe number range), the name a `string`.
  */
 export declare class KnownValue implements ToCbor, CborTagged, DigestProvider {
   private readonly _value;
@@ -26,15 +22,21 @@ export declare class KnownValue implements ToCbor, CborTagged, DigestProvider {
   /**
    * @param value - The codepoint (an unsigned 64-bit integer)
    * @param assignedName - The name the registry gives it, if any
-   * @throws RangeError when `value` is not an integer `number` or a `bigint` in `0 ..= 2⁶⁴ − 1`, or `assignedName` is not a string
+   * @throws KnownValuesError `InvalidParameter` when `value` is not a non-negative safe
+   *   integer `number` or a `bigint` in `0 ..= 2⁶⁴ − 1`, or `assignedName` is not a string
    */
   constructor(value: KnownValueInput, assignedName?: string);
   /**
    * The same as the constructor, for call chains.
    *
-   * @throws RangeError as the constructor does
+   * @throws KnownValuesError as the constructor does
    */
   static from(value: KnownValueInput, assignedName?: string): KnownValue;
+  /**
+   * Whether `x` is a `KnownValue`, from this module copy or another: checks
+   * the brand, not `instanceof`.
+   */
+  static isKnownValue(x: unknown): x is KnownValue;
   /** The codepoint, as a `number` when it is a safe integer and a `bigint` otherwise. */
   get value(): number | bigint;
   /** The codepoint as a `bigint`. */
@@ -43,8 +45,12 @@ export declare class KnownValue implements ToCbor, CborTagged, DigestProvider {
   get assignedName(): string | undefined;
   /** The assigned name, or the decimal codepoint when there is none. */
   get name(): string;
-  /** Two known values are equal when their codepoints are, whatever their names. */
-  equals(other: KnownValue): boolean;
+  /**
+   * Two known values are equal when their codepoints are, whatever their
+   * names and whichever module copy built them; anything that is not a
+   * `KnownValue` is not equal.
+   */
+  equals(other: unknown): boolean;
   /** `name`. */
   toString(): string;
   /** SHA-256 of the tagged CBOR. */
@@ -52,33 +58,203 @@ export declare class KnownValue implements ToCbor, CborTagged, DigestProvider {
   /**
    * Tagged-CBOR codec. `decode` requires `#6.40000(n)` — the tag is part of
    * the type, as in the reference's `TryFrom<CBOR>`; use `fromUntaggedCbor`
-   * for the bare unsigned integer.
+   * for the bare unsigned integer. `tags` is named from the global tags store
+   * at each access, as the reference's `cbor_tags()` is.
    */
   static get codec(): CborCodec<KnownValue>;
-  /** The known-value tag (40000). */
+  /** The known-value tag (40000), named as the global tags store names it at the time. */
   cborTags(): Tag[];
   /** The bare unsigned integer. */
   untaggedCbor(): Cbor;
   /** `#6.40000(value)`. */
   toCbor(): Cbor;
   /**
-   * Decode `#6.40000(n)` (the reference's `TryFrom<CBOR>`).
+   * Decode `#6.40000(n)` (the reference's `TryFrom<CBOR>`). Negative content
+   * wraps as {@link KnownValue.fromUntaggedCbor} describes.
    *
    * @throws CborError (dcbor's, with a code) — `WrongType` for an untagged value or a
-   *   non-integer content, `WrongTag` for another tag; `RangeError` never (the wire cannot
-   *   carry an out-of-range unsigned)
+   *   non-integer content, `WrongTag` for another tag (both tags named as the global
+   *   tags store names them)
    */
   static fromCbor(cborValue: Cbor): KnownValue;
   /**
-   * Decode the bare unsigned integer `n` — the content of tag 40000 (the
-   * reference's `from_untagged_cbor`), as a tag summariser or a decoder that has
-   * already stripped the tag holds it.
+   * Decode the bare integer `n` — the content of tag 40000 (the reference's
+   * `from_untagged_cbor`), as a tag summariser or a decoder that has already
+   * stripped the tag holds it. A negative integer node wraps to `2⁶⁴ + n`,
+   * as the reference's `u64::try_from` does (dcbor's negative-to-unsigned
+   * wrap), so `40000(-1)` is the codepoint 18446744073709551615; a whole
+   * float head that dcbor turns into an integer node follows the same rule.
    *
-   * @throws CborError `WrongType` when the CBOR is not an unsigned integer (a negative,
-   *   a tagged value, a bignum)
+   * @throws CborError `WrongType` when the CBOR is not an integer (a tagged value, a
+   *   bignum, a text), `OutOfRange` for a negative below −2⁶⁴
    */
   static fromUntaggedCbor(cborValue: Cbor): KnownValue;
 }
+//#endregion
+//#region src/error.d.ts
+/**
+ * The single error type thrown by this package.
+ *
+ * @module error
+ */
+/**
+ * Machine-readable discriminant for a {@link KnownValuesError}. `Io`, `Json`
+ * and `AlreadyInitialized` are the reference's `LoadError` and `ConfigError`
+ * variants; `InvalidParameter` is JS-only (an argument outside its domain).
+ */
+type KnownValuesErrorCode = "InvalidParameter" | "Io" | "Json" | "AlreadyInitialized";
+/**
+ * The argument an `InvalidParameter` error names: a codepoint that is not an
+ * unsigned 64-bit integer, a name that is not a string, a value that is not a
+ * `KnownValue`, or a path list, path or configuration of the wrong type.
+ */
+type KnownValuesParameter = "value" | "name" | "knownValue" | "knownValues" | "assignedName" | "paths" | "path" | "config" | "text";
+/**
+ * The structured payload of a {@link KnownValuesError}, discriminated by `code`.
+ * Only `InvalidParameter` carries data: `e.details.code === "InvalidParameter"`
+ * narrows to `{ parameter, value }`.
+ */
+type KnownValuesErrorDetails = {
+  /** One of the reference's variants; the message is its `Display` text. */
+  readonly code: Exclude<KnownValuesErrorCode, "InvalidParameter">;
+} | {
+  /** An argument outside its domain. */
+  readonly code: "InvalidParameter";
+  /** The argument. */
+  readonly parameter: KnownValuesParameter;
+  /** The value received, as passed. */
+  readonly value: unknown;
+};
+/**
+ * Thrown for an argument outside its domain (`InvalidParameter`, JS-only),
+ * a registry file that cannot be read (`Io`) or parsed (`Json`), and a
+ * directory configuration changed after the global store was built
+ * (`AlreadyInitialized`). Branch on `code`; the messages of the last three
+ * are the reference's `Display` strings.
+ *
+ * Instances come from the static factories only.
+ *
+ * @example
+ * ```ts
+ * try {
+ *   setDirectoryConfig(new DirectoryConfig());
+ * } catch (e) {
+ *   if (KnownValuesError.isKnownValuesError(e) && e.is("AlreadyInitialized")) {
+ *     // the global store has already been built
+ *   }
+ * }
+ * ```
+ */
+export declare class KnownValuesError extends Error {
+  /** Always `"KnownValuesError"`; the cross-copy identity {@link KnownValuesError.isKnownValuesError} checks. */
+  override readonly name = "KnownValuesError";
+  /** The discriminant; equals `details.code`. */
+  readonly code: KnownValuesErrorCode;
+  /** The structured payload. */
+  readonly details: KnownValuesErrorDetails;
+  private constructor();
+  /** An argument outside its domain: `<parameter> must be <expectation>, got <value>`. */
+  static invalidParameter(parameter: KnownValuesParameter, value: unknown): KnownValuesError;
+  /** A registry file or directory that cannot be read; `message` is the reference's `IO error: …` text. */
+  static io(message: string): KnownValuesError;
+  /** A registry file that does not parse; `message` is the reference's text (the serde_json message, prefixed by the loader with the file). */
+  static json(message: string): KnownValuesError;
+  /** The directory configuration was changed after the global store was built. */
+  static alreadyInitialized(): KnownValuesError;
+  /**
+   * Whether `x` is a `KnownValuesError`, from this module copy or another
+   * (a CommonJS and an ESM copy in one process): checks the `name` and the
+   * presence of `code`, not `instanceof`.
+   */
+  static isKnownValuesError(x: unknown): x is KnownValuesError;
+  /** `code === c`. */
+  is(c: KnownValuesErrorCode): boolean;
+}
+//#endregion
+//#region src/directory.d.ts
+/**
+ * The directories the global registry loads registry files from, in order
+ * (a later directory replaces an earlier one by codepoint). The default is
+ * the one directory `~/.known-values`; an empty configuration loads nothing
+ * and makes the global registry equal to a reference build without the
+ * `directory-loading` feature.
+ */
+export declare class DirectoryConfig {
+  private readonly _paths;
+  /**
+   * @param paths - The directories, in order (none by default)
+   * @throws KnownValuesError `InvalidParameter` when `paths` is not an array of strings
+   */
+  constructor(paths?: readonly string[]);
+  /** The default directory only. */
+  static defaultOnly(): DirectoryConfig;
+  /** `paths`, then the default directory. */
+  static withPathsAndDefault(paths: readonly string[]): DirectoryConfig;
+  /**
+   * `~/.known-values`: the home directory is a non-empty `HOME`, else the
+   * account's home from the user database, else `.` (the reference's
+   * `dirs::home_dir().unwrap_or(".")`).
+   */
+  static defaultDirectory(): string;
+  /** The directories, in order. */
+  get paths(): readonly string[];
+  /**
+   * Appends a directory.
+   *
+   * @throws KnownValuesError `InvalidParameter` when `path` is not a string
+   */
+  addPath(path: string): void;
+}
+/**
+ * Sets the directories the global registry will load from. Must be called
+ * before the first `getGlobalKnownValuesStore()`; the configuration is
+ * process-wide, shared by every copy of this module.
+ *
+ * @throws KnownValuesError `AlreadyInitialized` once the global registry has been built
+ */
+export declare function setDirectoryConfig(config: DirectoryConfig): void;
+/**
+ * Appends directories to the configuration the global registry will load
+ * from, starting from the default configuration when none was set.
+ *
+ * @throws KnownValuesError `AlreadyInitialized` once the global registry has been built
+ */
+export declare function addSearchPaths(paths: readonly string[]): void;
+/** One error a tolerant load met, with the file or directory it belongs to. */
+interface LoadFailure {
+  /** The file that failed to read or parse, or the directory that failed to list. */
+  readonly path: string;
+  /** The failure: `Io` or `Json`, with the reference's text. */
+  readonly error: KnownValuesError;
+}
+/** What `loadFromConfig` reports: the values by codepoint, the directories processed, the errors met. */
+interface LoadResult {
+  /**
+   * The loaded values by codepoint, a later directory or file replacing an
+   * earlier one; iteration is in first-seen codepoint order.
+   */
+  readonly values: ReadonlyMap<bigint, KnownValue>;
+  /** The directories whose entries were read to the end (missing ones included). */
+  readonly filesProcessed: readonly string[];
+  /** Every error met, with the file or directory it belongs to. */
+  readonly errors: readonly LoadFailure[];
+}
+/**
+ * The values of every `.json` registry file in `path`, in the host's
+ * directory order (the reference's `load_from_directory`): a missing path
+ * or a non-directory yields none; the first unreadable or unparsable file
+ * fails the whole load.
+ *
+ * @throws KnownValuesError `Io` (`IO error: …`) or `Json` (`JSON parse error in <file>: …`)
+ */
+export declare function loadFromDirectory(path: string): KnownValue[];
+/**
+ * The values of every configured directory (the reference's
+ * `load_from_config`): per-file errors are tolerated and reported; a
+ * directory that cannot be read to the end is reported as one error, its
+ * partial values discarded and its path left out of `filesProcessed`.
+ */
+export declare function loadFromConfig(config: DirectoryConfig): LoadResult;
 //#endregion
 //#region src/known-values-store.d.ts
 /**
@@ -93,30 +269,69 @@ export declare class KnownValue implements ToCbor, CborTagged, DigestProvider {
  * value is indexed like any other, so `byName("")` answers codepoint 0.
  * Iteration is in registration order; a replaced codepoint keeps its
  * original position. Values are frozen, so `clone()` may share them.
+ *
+ * Every argument is checked before the store is touched: a value that is
+ * not a `KnownValue`, or a name that is not a string, is a
+ * `KnownValuesError` `InvalidParameter`.
  */
 export declare class KnownValuesStore implements Iterable<KnownValue> {
   private _byValue;
   private _byName;
-  /** @param knownValues - Registered in order, as `register` would. */
+  /**
+   * @param knownValues - Registered in order, as `register` would.
+   * @throws KnownValuesError `InvalidParameter` when `knownValues` is not iterable or holds a non-`KnownValue`
+   */
   constructor(knownValues?: Iterable<KnownValue>);
   /**
    * Add or replace a value. A later registration of the same codepoint
    * replaces the earlier one and retires its name; the same name on another
    * codepoint moves the name index (see the class doc).
+   *
+   * @throws KnownValuesError `InvalidParameter` when `knownValue` is not a `KnownValue`
    */
   register(knownValue: KnownValue): void;
   /**
    * The registered value with this codepoint, if any.
    *
-   * @throws RangeError when `value` is not an integer `number` or a `bigint` in `0 ..= 2⁶⁴ − 1`
+   * @throws KnownValuesError `InvalidParameter` when `value` is not a non-negative safe
+   *   integer `number` or a `bigint` in `0 ..= 2⁶⁴ − 1`
    */
   byValue(value: KnownValueInput): KnownValue | undefined;
-  /** The registered value with this assigned name, if any. */
+  /**
+   * The registered value with this assigned name, if any.
+   *
+   * @throws KnownValuesError `InvalidParameter` when `assignedName` is not a string
+   */
   byName(assignedName: string): KnownValue | undefined;
-  /** The name this store assigns to the value's codepoint, if any. */
+  /**
+   * The name this store assigns to the value's codepoint, if any.
+   *
+   * @throws KnownValuesError `InvalidParameter` when `knownValue` is not a `KnownValue`
+   */
   assignedNameOf(knownValue: KnownValue): string | undefined;
-  /** The store's name for the codepoint, else the value's own name. */
+  /**
+   * The store's name for the codepoint, else the value's own name.
+   *
+   * @throws KnownValuesError `InvalidParameter` when `knownValue` is not a `KnownValue`
+   */
   nameOf(knownValue: KnownValue): string;
+  /**
+   * Register every entry of the `.json` registry files in `path`, in the
+   * host's directory order (the reference's `load_from_directory`): a
+   * missing path or a non-directory registers nothing; the first unreadable
+   * or unparsable file stops the load with nothing registered.
+   *
+   * @returns How many values the directory held
+   * @throws KnownValuesError `Io` or `Json` for the first failing file or directory
+   */
+  loadFromDirectory(path: string): number;
+  /**
+   * Register the values of every configured directory, tolerating per-file
+   * errors (the reference's `load_from_config`): later directories replace
+   * earlier ones by codepoint, and the result lists the directories
+   * processed and every error met.
+   */
+  loadFromConfig(config: DirectoryConfig): LoadResult;
   /** How many codepoints are registered. */
   get size(): number;
   /** Registered values, in registration order. */
@@ -129,48 +344,105 @@ export declare class KnownValuesStore implements Iterable<KnownValue> {
 //#endregion
 //#region src/registry.d.ts
 /**
- * The process-wide registry, built on first call: the BCR-2023-002
- * constants, then the bundled vocabularies (later rows override earlier
- * ones). One per module graph — a CommonJS and an ESM consumer in the same
- * process each get their own, and a registration in one is invisible in
- * the other.
+ * The process-wide registry, built on first call and shared by every copy
+ * of this module in the process (the ESM and CommonJS builds): the
+ * reference's 102 seeded constants, then the entries of the registry files
+ * in the configured directories (`~/.known-values` unless
+ * `setDirectoryConfig` or `addSearchPaths` said otherwise before the first
+ * call), later entries replacing earlier ones by codepoint. Hosts without a
+ * filesystem load nothing. Errors met while loading are tolerated, as the
+ * reference's `load_from_config` tolerates them; `loadFromConfig` reports
+ * them for a store of your own.
  */
 export declare function getGlobalKnownValuesStore(): KnownValuesStore;
 /** Run `action` with the global registry. */
 export declare function withKnownValues<T>(action: (store: KnownValuesStore) => T): T;
 /**
- * The registered value for a codepoint, or a bare `KnownValue` when the
- * store (the global one by default) does not know it.
+ * The registered value for a codepoint, or a bare `KnownValue` when `store`
+ * does not know it or is `undefined` (the reference's
+ * `known_value_for_raw_value(raw, None)`): pass
+ * `getGlobalKnownValuesStore()` to resolve through the global registry.
  *
- * @throws RangeError when `value` is not an integer `number` or a `bigint` in `0 ..= 2⁶⁴ − 1`
+ * @throws KnownValuesError `InvalidParameter` when `value` is not a non-negative safe
+ *   integer `number` or a `bigint` in `0 ..= 2⁶⁴ − 1`
  */
-export declare function resolveKnownValue(value: KnownValueInput, store?: KnownValuesStore): KnownValue;
+export declare function resolveKnownValue(value: KnownValueInput, store: KnownValuesStore | undefined): KnownValue;
+//#endregion
+//#region src/registry-file.d.ts
+/** One entry of a registry file. */
+interface RegistryEntry {
+  /** The codepoint, an unsigned 64-bit integer. */
+  readonly codepoint: bigint;
+  /** The name. */
+  readonly name: string;
+  /** The entry type, when given and not `null`. */
+  readonly type?: string;
+  /** The URI, when given and not `null`. */
+  readonly uri?: string;
+  /** The description, when given and not `null`. */
+  readonly description?: string;
+}
+/** The `ontology` block of a registry file. */
+interface OntologyInfo {
+  /** The registry's name. */
+  readonly name?: string;
+  /** Its `source_url`. */
+  readonly sourceUrl?: string;
+  /** Its `start_code_point`, an unsigned 64-bit integer. */
+  readonly startCodePoint?: bigint;
+  /** Its `processing_strategy`. */
+  readonly processingStrategy?: string;
+}
+/** The `generated` block of a registry file. */
+interface GeneratedInfo {
+  /** The generating tool. */
+  readonly tool?: string;
+}
+/** A parsed registry file. */
+interface RegistryFile {
+  /** The `ontology` block, when given and not `null`. */
+  readonly ontology?: OntologyInfo;
+  /** The `generated` block, when given and not `null`. */
+  readonly generated?: GeneratedInfo;
+  /** The entries, in file order; duplicates are kept. */
+  readonly entries: readonly RegistryEntry[];
+  /**
+   * The `statistics` value, when given and not `null`: any JSON value, with
+   * objects as plain objects (a repeated key keeps its last value), arrays as
+   * arrays, JSON integers as `bigint`, JSON numbers with a fraction or an
+   * exponent as `number`, and `null` as `null`.
+   */
+  readonly statistics?: unknown;
+}
+/**
+ * Parses the text of a registry file exactly as the reference does with
+ * `serde_json::from_str::<RegistryFile>`.
+ *
+ * Unknown fields are skipped at every level, a repeated known field or a
+ * missing required one is an error, `null` for an optional field reads as
+ * absent, and a struct may also be given as an array of its fields in order.
+ * Nesting is limited to 128 levels except while skipping unknown fields.
+ *
+ * @param text - The file's content; a JS string, so already valid Unicode.
+ * @returns The parsed file.
+ * @throws {KnownValuesError} With code `Json` and serde_json's message,
+ *   including ` at line L column C` (byte-based), when `text` is not a
+ *   registry file; with code `InvalidParameter` when `text` is not a string.
+ *
+ * @example
+ * ```ts
+ * const file = parseRegistryFile('{"entries":[{"codepoint":1000,"name":"myValue"}]}');
+ * file.entries[0].codepoint; // 1000n
+ * ```
+ */
+export declare function parseRegistryFile(text: string): RegistryFile;
 //#endregion
 //#region src/registry.generated.d.ts
 /**
- * GENERATED by scripts/generate-registry.ts from data/*.json - do not edit.
- *
- * The bundled registries in load order (later rows override earlier ones
- * with the same codepoint when the global store is built):
- *   0_blockchain_commons_registry.json (104 entries, blockchain_commons)
- *   1000_community_registry.json (0 entries, community_registry)
- *   2000_rdf_registry.json (21 entries, rdf)
- *   2050_rdfs_registry.json (15 entries, rdfs)
- *   2100_owl2_registry.json (75 entries, owl2)
- *   2200_dce_registry.json (15 entries, dce)
- *   2300_dct_registry.json (89 entries, dct)
- *   2500_foaf_registry.json (75 entries, foaf)
- *   2700_skos_registry.json (32 entries, skos)
- *   2800_solid_registry.json (33 entries, solid)
- *   2900_vc_registry.json (28 entries, vc)
- *   3000_gs1_registry.json (609 entries, gs1)
- *   10000_schema_registry.json (2450 entries, schema)
- * Skipped: 100000_community_registry.json (see the generator).
- */
-/**
- * `[codepoint, name]` rows of the bundled registries, in load order. The
- * array is frozen; the store copies the values out, so the rows stay plain
- * tuples.
+ * `[codepoint, name]` rows of the bundled registries, in load order: the
+ * Research registry files as a frozen table of frozen rows, for hosts that
+ * cannot read a directory. Not registered by default; register it to get the
+ * names a reference build reads from its registry directory.
  */
 export declare const BUNDLED_REGISTRY: readonly (readonly [number, string])[];
 //#endregion
@@ -597,5 +869,5 @@ export declare const SELF: KnownValue;
 /** Every registry constant, in codepoint order. */
 export declare const REGISTRY_CONSTANTS: readonly KnownValue[];
 //#endregion
-export type { KnownValueInput };
+export type { GeneratedInfo, KnownValueInput, KnownValuesErrorCode, KnownValuesErrorDetails, KnownValuesParameter, LoadFailure, LoadResult, OntologyInfo, RegistryEntry, RegistryFile };
 //# sourceMappingURL=index.d.mts.map

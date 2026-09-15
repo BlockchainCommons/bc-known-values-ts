@@ -17,6 +17,7 @@ import { createRequire } from "node:module";
 import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import type * as Api from "../src/index.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
@@ -26,6 +27,15 @@ const pkg = createRequire(import.meta.url)(join(root, "package.json")) as {
 };
 
 const built = existsSync(join(dist, "index.mjs"));
+/** The error the CJS copy throws for a bad codepoint. */
+function cjsThrow(cjs: typeof Api): unknown {
+  try {
+    new cjs.KnownValue(1.5);
+    return undefined;
+  } catch (e) {
+    return e;
+  }
+}
 
 /** Every subpath the package promises, as dist-relative base names. */
 const entries = Object.entries(pkg.exports)
@@ -50,6 +60,26 @@ describe.skipIf(!built)("dist packaging", () => {
   it("the ESM root entry loads and exposes a public surface", async () => {
     const mod = (await import(join(dist, "index.mjs"))) as Record<string, unknown>;
     expect(Object.keys(mod).length).toBeGreaterThan(0);
+  });
+
+  it("the CJS and ESM entries share one global registry and one configuration", async () => {
+    const esm = (await import(join(dist, "index.mjs"))) as typeof Api;
+    let cjs: typeof Api;
+    try {
+      cjs = createRequire(import.meta.url)(join(dist, "index.cjs")) as typeof Api;
+    } catch (error) {
+      console.warn(`CJS entry could not be loaded in this environment: ${String(error)}`);
+      return;
+    }
+    // the suite's setup pinned the configuration through the source copy; the
+    // built copies see that lock and the same store
+    expect(cjs.getGlobalKnownValuesStore()).toBe(esm.getGlobalKnownValuesStore());
+    cjs.getGlobalKnownValuesStore().register(new cjs.KnownValue(70001, "fromCjs"));
+    expect(esm.getGlobalKnownValuesStore().byName("fromCjs")?.value).toBe(70001);
+    expect(esm.IS_A.equals(cjs.IS_A)).toBe(true);
+    expect(esm.KnownValue.isKnownValue(cjs.IS_A)).toBe(true);
+    expect(() => cjs.setDirectoryConfig(new cjs.DirectoryConfig())).toThrow(/after KNOWN_VALUES/);
+    expect(esm.KnownValuesError.isKnownValuesError(cjsThrow(cjs))).toBe(true);
   });
 
   it("the CJS root entry exposes the same names as the ESM one", async () => {

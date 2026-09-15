@@ -1,0 +1,14 @@
+{
+ "count": 1,
+ "vectors": [
+  {
+   "name": "kv 1 \"isA\" (last digest digit flipped)",
+   "recipe": {
+    "k": "kv",
+    "v": "1",
+    "name": "isA"
+   },
+   "expect": "d99c4001|2be2d79b306a21ff8e3e6bd3d1c2c6c74ff4a693b1e7ba3a0f40cdfb9ea493f0|isA|isA"
+  }
+ ]
+}

@@ -16,6 +16,9 @@ import { ToCbor } from '@blockchaincommons/dcbor';
 export const ACYCLIC_GRAPH: KnownValue;
 
 // @public
+export function addSearchPaths(paths: readonly string[]): void;
+
+// @public
 export const ALLOW: KnownValue;
 
 // @public
@@ -91,6 +94,16 @@ export const DIGRAPH: KnownValue;
 export const DIHYPERGRAPH: KnownValue;
 
 // @public
+export class DirectoryConfig {
+    constructor(paths?: readonly string[]);
+    addPath(path: string): void;
+    static defaultDirectory(): string;
+    static defaultOnly(): DirectoryConfig;
+    get paths(): readonly string[];
+    static withPathsAndDefault(paths: readonly string[]): DirectoryConfig;
+}
+
+// @public
 export const EDGE: KnownValue;
 
 // @public
@@ -107,6 +120,11 @@ export const ETHEREUM_VALUE: KnownValue;
 
 // @public
 export const FOREST: KnownValue;
+
+// @public
+export interface GeneratedInfo {
+    readonly tool?: string;
+}
 
 // @public
 export function getGlobalKnownValuesStore(): KnownValuesStore;
@@ -256,10 +274,11 @@ export class KnownValue implements ToCbor, CborTagged, DigestProvider {
     cborTags(): Tag[];
     static get codec(): CborCodec<KnownValue>;
     digest(): Digest;
-    equals(other: KnownValue): boolean;
+    equals(other: unknown): boolean;
     static from(value: KnownValueInput, assignedName?: string): KnownValue;
     static fromCbor(cborValue: Cbor): KnownValue;
     static fromUntaggedCbor(cborValue: Cbor): KnownValue;
+    static isKnownValue(x: unknown): x is KnownValue;
     get name(): string;
     toCbor(): Cbor;
     toString(): string;
@@ -272,6 +291,34 @@ export class KnownValue implements ToCbor, CborTagged, DigestProvider {
 export type KnownValueInput = number | bigint;
 
 // @public
+export class KnownValuesError extends Error {
+    static alreadyInitialized(): KnownValuesError;
+    readonly code: KnownValuesErrorCode;
+    readonly details: KnownValuesErrorDetails;
+    static invalidParameter(parameter: KnownValuesParameter, value: unknown): KnownValuesError;
+    static io(message: string): KnownValuesError;
+    is(c: KnownValuesErrorCode): boolean;
+    static isKnownValuesError(x: unknown): x is KnownValuesError;
+    static json(message: string): KnownValuesError;
+    override readonly name = "KnownValuesError";
+}
+
+// @public
+export type KnownValuesErrorCode = "InvalidParameter" | "Io" | "Json" | "AlreadyInitialized";
+
+// @public
+export type KnownValuesErrorDetails = {
+    readonly code: Exclude<KnownValuesErrorCode, "InvalidParameter">;
+} | {
+    readonly code: "InvalidParameter";
+    readonly parameter: KnownValuesParameter;
+    readonly value: unknown;
+};
+
+// @public
+export type KnownValuesParameter = "value" | "name" | "knownValue" | "knownValues" | "assignedName" | "paths" | "path" | "config" | "text";
+
+// @public
 export class KnownValuesStore implements Iterable<KnownValue> {
     [Symbol.iterator](): Iterator<KnownValue>;
     constructor(knownValues?: Iterable<KnownValue>);
@@ -279,6 +326,8 @@ export class KnownValuesStore implements Iterable<KnownValue> {
     byName(assignedName: string): KnownValue | undefined;
     byValue(value: KnownValueInput): KnownValue | undefined;
     clone(): KnownValuesStore;
+    loadFromConfig(config: DirectoryConfig): LoadResult;
+    loadFromDirectory(path: string): number;
     nameOf(knownValue: KnownValue): string;
     register(knownValue: KnownValue): void;
     get size(): number;
@@ -287,6 +336,25 @@ export class KnownValuesStore implements Iterable<KnownValue> {
 
 // @public
 export const LANGUAGE: KnownValue;
+
+// @public
+export interface LoadFailure {
+    readonly error: KnownValuesError;
+    readonly path: string;
+}
+
+// @public
+export function loadFromConfig(config: DirectoryConfig): LoadResult;
+
+// @public
+export function loadFromDirectory(path: string): KnownValue[];
+
+// @public
+export interface LoadResult {
+    readonly errors: readonly LoadFailure[];
+    readonly filesProcessed: readonly string[];
+    readonly values: ReadonlyMap<bigint, KnownValue>;
+}
 
 // @public
 export const MAIN_NET_VALUE: KnownValue;
@@ -316,6 +384,14 @@ export const NOTE: KnownValue;
 export const OK_VALUE: KnownValue;
 
 // @public
+export interface OntologyInfo {
+    readonly name?: string;
+    readonly processingStrategy?: string;
+    readonly sourceUrl?: string;
+    readonly startCodePoint?: bigint;
+}
+
+// @public
 export const OUTPUT_DESCRIPTOR: KnownValue;
 
 // @public
@@ -332,6 +408,9 @@ export const PARENT_FINGERPRINT: KnownValue;
 
 // @public
 export const PARENT_PATH: KnownValue;
+
+// @public
+export function parseRegistryFile(text: string): RegistryFile;
 
 // @public
 export const POSITION: KnownValue;
@@ -409,7 +488,24 @@ export const RECIPIENT_CONTINUATION: KnownValue;
 export const REGISTRY_CONSTANTS: readonly KnownValue[];
 
 // @public
-export function resolveKnownValue(value: KnownValueInput, store?: KnownValuesStore): KnownValue;
+export interface RegistryEntry {
+    readonly codepoint: bigint;
+    readonly description?: string;
+    readonly name: string;
+    readonly type?: string;
+    readonly uri?: string;
+}
+
+// @public
+export interface RegistryFile {
+    readonly entries: readonly RegistryEntry[];
+    readonly generated?: GeneratedInfo;
+    readonly ontology?: OntologyInfo;
+    readonly statistics?: unknown;
+}
+
+// @public
+export function resolveKnownValue(value: KnownValueInput, store: KnownValuesStore | undefined): KnownValue;
 
 // @public
 export const RESULT: KnownValue;
@@ -431,6 +527,9 @@ export const SENDER_CONTINUATION: KnownValue;
 
 // @public
 export const SERVICE: KnownValue;
+
+// @public
+export function setDirectoryConfig(config: DirectoryConfig): void;
 
 // @public
 export const SIGNED: KnownValue;

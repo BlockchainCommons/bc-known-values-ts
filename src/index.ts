@@ -7,7 +7,29 @@
  */
 export { KnownValue, type KnownValueInput } from "./known-value.js";
 export { KnownValuesStore } from "./known-values-store.js";
+export {
+  KnownValuesError,
+  type KnownValuesErrorCode,
+  type KnownValuesErrorDetails,
+  type KnownValuesParameter,
+} from "./error.js";
 export { getGlobalKnownValuesStore, withKnownValues, resolveKnownValue } from "./registry.js";
+export {
+  DirectoryConfig,
+  type LoadFailure,
+  type LoadResult,
+  addSearchPaths,
+  loadFromConfig,
+  loadFromDirectory,
+  setDirectoryConfig,
+} from "./directory.js";
+export {
+  parseRegistryFile,
+  type GeneratedInfo,
+  type OntologyInfo,
+  type RegistryEntry,
+  type RegistryFile,
+} from "./registry-file.js";
 export { BUNDLED_REGISTRY } from "./registry.generated.js";
 export { KNOWN_VALUE_CODEPOINTS, REGISTRY_CONSTANTS } from "./constants.js";
 export {

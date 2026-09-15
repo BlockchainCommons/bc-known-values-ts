@@ -1,0 +1,410 @@
+[
+ {
+  "codepoint": 0,
+  "name": ""
+ },
+ {
+  "codepoint": 1,
+  "name": "isA"
+ },
+ {
+  "codepoint": 2,
+  "name": "id"
+ },
+ {
+  "codepoint": 3,
+  "name": "signed"
+ },
+ {
+  "codepoint": 4,
+  "name": "note"
+ },
+ {
+  "codepoint": 5,
+  "name": "hasRecipient"
+ },
+ {
+  "codepoint": 6,
+  "name": "sskrShare"
+ },
+ {
+  "codepoint": 7,
+  "name": "controller"
+ },
+ {
+  "codepoint": 8,
+  "name": "key"
+ },
+ {
+  "codepoint": 9,
+  "name": "dereferenceVia"
+ },
+ {
+  "codepoint": 10,
+  "name": "entity"
+ },
+ {
+  "codepoint": 11,
+  "name": "name"
+ },
+ {
+  "codepoint": 12,
+  "name": "language"
+ },
+ {
+  "codepoint": 13,
+  "name": "issuer"
+ },
+ {
+  "codepoint": 14,
+  "name": "holder"
+ },
+ {
+  "codepoint": 15,
+  "name": "salt"
+ },
+ {
+  "codepoint": 16,
+  "name": "date"
+ },
+ {
+  "codepoint": 17,
+  "name": "Unknown"
+ },
+ {
+  "codepoint": 18,
+  "name": "version"
+ },
+ {
+  "codepoint": 19,
+  "name": "hasSecret"
+ },
+ {
+  "codepoint": 20,
+  "name": "edits"
+ },
+ {
+  "codepoint": 21,
+  "name": "validFrom"
+ },
+ {
+  "codepoint": 22,
+  "name": "validUntil"
+ },
+ {
+  "codepoint": 23,
+  "name": "position"
+ },
+ {
+  "codepoint": 24,
+  "name": "nickname"
+ },
+ {
+  "codepoint": 26,
+  "name": "attestation"
+ },
+ {
+  "codepoint": 27,
+  "name": "verifiableAt"
+ },
+ {
+  "codepoint": 50,
+  "name": "attachment"
+ },
+ {
+  "codepoint": 51,
+  "name": "vendor"
+ },
+ {
+  "codepoint": 52,
+  "name": "conformsTo"
+ },
+ {
+  "codepoint": 60,
+  "name": "allow"
+ },
+ {
+  "codepoint": 61,
+  "name": "deny"
+ },
+ {
+  "codepoint": 62,
+  "name": "endpoint"
+ },
+ {
+  "codepoint": 63,
+  "name": "delegate"
+ },
+ {
+  "codepoint": 64,
+  "name": "provenance"
+ },
+ {
+  "codepoint": 65,
+  "name": "privateKey"
+ },
+ {
+  "codepoint": 66,
+  "name": "service"
+ },
+ {
+  "codepoint": 67,
+  "name": "capability"
+ },
+ {
+  "codepoint": 68,
+  "name": "provenanceGenerator"
+ },
+ {
+  "codepoint": 70,
+  "name": "All"
+ },
+ {
+  "codepoint": 71,
+  "name": "Authorize"
+ },
+ {
+  "codepoint": 72,
+  "name": "Sign"
+ },
+ {
+  "codepoint": 73,
+  "name": "Encrypt"
+ },
+ {
+  "codepoint": 74,
+  "name": "Elide"
+ },
+ {
+  "codepoint": 75,
+  "name": "Issue"
+ },
+ {
+  "codepoint": 76,
+  "name": "Access"
+ },
+ {
+  "codepoint": 80,
+  "name": "Delegate"
+ },
+ {
+  "codepoint": 81,
+  "name": "Verify"
+ },
+ {
+  "codepoint": 82,
+  "name": "Update"
+ },
+ {
+  "codepoint": 83,
+  "name": "Transfer"
+ },
+ {
+  "codepoint": 84,
+  "name": "Elect"
+ },
+ {
+  "codepoint": 85,
+  "name": "Burn"
+ },
+ {
+  "codepoint": 86,
+  "name": "Revoke"
+ },
+ {
+  "codepoint": 100,
+  "name": "body"
+ },
+ {
+  "codepoint": 101,
+  "name": "result"
+ },
+ {
+  "codepoint": 102,
+  "name": "error"
+ },
+ {
+  "codepoint": 103,
+  "name": "OK"
+ },
+ {
+  "codepoint": 104,
+  "name": "Processing"
+ },
+ {
+  "codepoint": 105,
+  "name": "sender"
+ },
+ {
+  "codepoint": 106,
+  "name": "senderContinuation"
+ },
+ {
+  "codepoint": 107,
+  "name": "recipientContinuation"
+ },
+ {
+  "codepoint": 108,
+  "name": "content"
+ },
+ {
+  "codepoint": 200,
+  "name": "Seed"
+ },
+ {
+  "codepoint": 201,
+  "name": "PrivateKey"
+ },
+ {
+  "codepoint": 202,
+  "name": "PublicKey"
+ },
+ {
+  "codepoint": 203,
+  "name": "MasterKey"
+ },
+ {
+  "codepoint": 300,
+  "name": "asset"
+ },
+ {
+  "codepoint": 301,
+  "name": "Bitcoin"
+ },
+ {
+  "codepoint": 302,
+  "name": "Ethereum"
+ },
+ {
+  "codepoint": 303,
+  "name": "Tezos"
+ },
+ {
+  "codepoint": 400,
+  "name": "network"
+ },
+ {
+  "codepoint": 401,
+  "name": "MainNet"
+ },
+ {
+  "codepoint": 402,
+  "name": "TestNet"
+ },
+ {
+  "codepoint": 500,
+  "name": "BIP32Key"
+ },
+ {
+  "codepoint": 501,
+  "name": "chainCode"
+ },
+ {
+  "codepoint": 502,
+  "name": "DerivationPath"
+ },
+ {
+  "codepoint": 503,
+  "name": "parentPath"
+ },
+ {
+  "codepoint": 504,
+  "name": "childrenPath"
+ },
+ {
+  "codepoint": 505,
+  "name": "parentFingerprint"
+ },
+ {
+  "codepoint": 506,
+  "name": "PSBT"
+ },
+ {
+  "codepoint": 507,
+  "name": "OutputDescriptor"
+ },
+ {
+  "codepoint": 508,
+  "name": "outputDescriptor"
+ },
+ {
+  "codepoint": 600,
+  "name": "Graph"
+ },
+ {
+  "codepoint": 601,
+  "name": "SourceTargetGraph"
+ },
+ {
+  "codepoint": 602,
+  "name": "ParentChildGraph"
+ },
+ {
+  "codepoint": 603,
+  "name": "Digraph"
+ },
+ {
+  "codepoint": 604,
+  "name": "AcyclicGraph"
+ },
+ {
+  "codepoint": 605,
+  "name": "Multigraph"
+ },
+ {
+  "codepoint": 606,
+  "name": "Pseudograph"
+ },
+ {
+  "codepoint": 607,
+  "name": "GraphFragment"
+ },
+ {
+  "codepoint": 608,
+  "name": "DAG"
+ },
+ {
+  "codepoint": 609,
+  "name": "Tree"
+ },
+ {
+  "codepoint": 610,
+  "name": "Forest"
+ },
+ {
+  "codepoint": 611,
+  "name": "CompoundGraph"
+ },
+ {
+  "codepoint": 612,
+  "name": "Hypergraph"
+ },
+ {
+  "codepoint": 613,
+  "name": "Dihypergraph"
+ },
+ {
+  "codepoint": 700,
+  "name": "node"
+ },
+ {
+  "codepoint": 701,
+  "name": "edge"
+ },
+ {
+  "codepoint": 702,
+  "name": "source"
+ },
+ {
+  "codepoint": 703,
+  "name": "target"
+ },
+ {
+  "codepoint": 704,
+  "name": "parent"
+ },
+ {
+  "codepoint": 705,
+  "name": "child"
+ }
+]
