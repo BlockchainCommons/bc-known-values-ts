@@ -1,0 +1,629 @@
+{
+  "cases": [
+    {
+      "name": "valid-full",
+      "hex": "7b0a2020226f6e746f6c6f6779223a207b0a20202020226e616d65223a2022746573745f7265676973747279222c0a2020202022736f757263655f75726c223a202268747470733a2f2f6578616d706c652e636f6d2f7265676973747279222c0a202020202273746172745f636f64655f706f696e74223a20313030302c0a202020202270726f63657373696e675f7374726174656779223a20226d616e75616c220a20207d2c0a20202267656e657261746564223a207b22746f6f6c223a202267656e20312e30227d2c0a202022656e7472696573223a205b0a202020207b22636f6465706f696e74223a20313030302c20226e616d65223a2022616c706861222c202274797065223a202270726f7065727479222c2022757269223a202268747470733a2f2f6578616d706c652e636f6d2f766f63616223616c706861222c20226465736372697074696f6e223a2022546865206669727374227d2c0a202020207b22636f6465706f696e74223a20313030312c20226e616d65223a202262657461227d0a20205d2c0a20202273746174697374696373223a207b22746f74616c223a20327d0a7d0a",
+      "expect": "ok:entries=[1000:\"alpha\":\"property\":\"https://example.com/vocab#alpha\":\"The first\";1001:\"beta\":null:null:null]|ontology=\"test_registry\",\"https://example.com/registry\",1000,\"manual\"|generated=\"gen 1.0\"|statistics=present"
+    },
+    {
+      "name": "unknown-fields-everywhere",
+      "hex": "7b2276657273696f6e223a332c226f6e746f6c6f6779223a7b226e616d65223a226f222c226578747261223a5b312c7b2264656570223a6e756c6c7d5d2c22666c6167223a747275657d2c2267656e657261746564223a7b22746f6f6c223a2274222c227768656e223a226e6f77227d2c22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a2261222c2274616773223a5b2278222c7b2279223a2d322e3565337d5d2c226e6f7465223a226e222c226e6f223a66616c73657d5d2c2273746174697374696373223a7b22746f74616c223a317d2c22747261696c6572223a22656e64222c2264656570223a5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d2c226e756d73223a5b2d302c312e35652b332c32452d322c302e352c31302c2d372c302c312e3565332c316531305d2c226c6f6e65223a225c7564383030222c22657363223a225c225c5c5c2f5c625c665c6e5c725c745c7530303431222c226f626a223a7b226b223a5b7b2261223a6e756c6c7d5d2c226d223a7b7d7d7d",
+      "expect": "ok:entries=[1:\"a\":null:null:null]|ontology=\"o\",null,null,null|generated=\"t\"|statistics=present"
+    },
+    {
+      "name": "null-optionals",
+      "hex": "7b226f6e746f6c6f6779223a6e756c6c2c2267656e657261746564223a6e756c6c2c22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a2261222c2274797065223a6e756c6c2c22757269223a6e756c6c2c226465736372697074696f6e223a6e756c6c7d5d2c2273746174697374696373223a6e756c6c7d",
+      "expect": "ok:entries=[1:\"a\":null:null:null]|ontology=null|generated=null|statistics=absent"
+    },
+    {
+      "name": "null-nested-optionals",
+      "hex": "7b226f6e746f6c6f6779223a7b226e616d65223a6e756c6c2c22736f757263655f75726c223a6e756c6c2c2273746172745f636f64655f706f696e74223a6e756c6c2c2270726f63657373696e675f7374726174656779223a6e756c6c7d2c2267656e657261746564223a7b22746f6f6c223a6e756c6c7d2c22656e7472696573223a5b5d7d",
+      "expect": "ok:entries=[]|ontology=null,null,null,null|generated=null|statistics=absent"
+    },
+    {
+      "name": "escape-heavy-name",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a22745c746162205c7530306539205c7532306163205c75643833645c756465303020715c2220625c5c20735c2f205c625c665c6e5c72205c753030303120656e64227d5d7d",
+      "expect": "ok:entries=[1:\"t\\tab \u00e9 \u20ac \ud83d\ude00 q\\\" b\\\\ s/ \\b\\f\\n\\r \\u0001 end\":null:null:null]|ontology=null|generated=null|statistics=absent"
+    },
+    {
+      "name": "raw-non-ascii-name",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a22efbbbf636166c3a920f09f9880227d5d7d",
+      "expect": "ok:entries=[1:\"\ufeffcaf\u00e9 \ud83d\ude00\":null:null:null]|ontology=null|generated=null|statistics=absent"
+    },
+    {
+      "name": "codepoints-exact",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a393030373139393235343734303939332c226e616d65223a2261227d2c7b22636f6465706f696e74223a31383434363734343037333730393535313631352c226e616d65223a2262227d2c7b22636f6465706f696e74223a302c226e616d65223a2263227d5d7d",
+      "expect": "ok:entries=[9007199254740993:\"a\":null:null:null;18446744073709551615:\"b\":null:null:null;0:\"c\":null:null:null]|ontology=null|generated=null|statistics=absent"
+    },
+    {
+      "name": "duplicates-kept",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a2273616d65227d2c7b22636f6465706f696e74223a322c226e616d65223a2273616d65227d2c7b22636f6465706f696e74223a372c226e616d65223a226669727374227d2c7b22636f6465706f696e74223a372c226e616d65223a227365636f6e64227d5d7d",
+      "expect": "ok:entries=[1:\"same\":null:null:null;2:\"same\":null:null:null;7:\"first\":null:null:null;7:\"second\":null:null:null]|ontology=null|generated=null|statistics=absent"
+    },
+    {
+      "name": "surrounding-whitespace",
+      "hex": "20090d0a7b2022656e747269657322203a205b205d207d0a0d0920",
+      "expect": "ok:entries=[]|ontology=null|generated=null|statistics=absent"
+    },
+    {
+      "name": "structs-as-arrays",
+      "hex": "5b7b226e616d65223a226f227d2c6e756c6c2c5b5b312c2261222c6e756c6c2c2275222c6e756c6c5d5d5d",
+      "expect": "ok:entries=[1:\"a\":null:\"u\":null]|ontology=\"o\",null,null,null|generated=null|statistics=absent"
+    },
+    {
+      "name": "statistics-values",
+      "hex": "7b22656e7472696573223a5b5d2c2273746174697374696373223a7b2261223a5b312c322c7b2262223a747275657d5d2c227a223a2d302c2266223a312e352c22626967223a31383434363734343037333730393535313631352c226e6567223a2d393232333337323033363835343737353830382c2273223a2278222c226e223a6e756c6c2c2274223a747275652c226e6f223a66616c73652c2265223a7b7d2c226c223a5b5d2c2261223a22616761696e222c225f5f70726f746f5f5f223a7b22706f6c6c75746564223a317d7d7d",
+      "expect": "ok:entries=[]|ontology=null|generated=null|statistics=present"
+    },
+    {
+      "name": "statistics-depth-126",
+      "hex": "7b22656e7472696573223a5b5d2c2273746174697374696373223a5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d7d",
+      "expect": "ok:entries=[]|ontology=null|generated=null|statistics=present"
+    },
+    {
+      "name": "statistics-float-forms",
+      "hex": "7b22656e7472696573223a5b5d2c2273746174697374696373223a5b312e3565332c32452b322c31652d322c2d312e352c313834343637343430373337303935353136312e362c31383434363734343037333730393535313631352e352c3132333435363738393031323334353637383930312e352c31323334353637383930313233343536373839303165322c312e303030303030303030303030303030303030303030303030303030303165322c2d31652d323134373438333634382c31652d32313437343833363438302c302e3565315d7d",
+      "expect": "ok:entries=[]|ontology=null|generated=null|statistics=present"
+    },
+    {
+      "name": "codepoint-float-1002",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a313030322e302c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: floating point `1002.0`, expected u64 at line 1 column 31"
+    },
+    {
+      "name": "codepoint-1e3",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a3165332c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: floating point `1000.0`, expected u64 at line 1 column 28"
+    },
+    {
+      "name": "codepoint-1-5",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312e352c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: floating point `1.5`, expected u64 at line 1 column 28"
+    },
+    {
+      "name": "codepoint-1e-7",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a31652d372c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: floating point `1e-7`, expected u64 at line 1 column 29"
+    },
+    {
+      "name": "codepoint-u64-max-plus-1",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a31383434363734343037333730393535313631362c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: floating point `1.8446744073709552e+19`, expected u64 at line 1 column 45"
+    },
+    {
+      "name": "codepoint-30-digits",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a3132333435363738393031323334353637383930313233343536373839302c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: floating point `1.2345678901234568e+29`, expected u64 at line 1 column 55"
+    },
+    {
+      "name": "codepoint-neg-1",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a2d312c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid value: integer `-1`, expected u64 at line 1 column 27"
+    },
+    {
+      "name": "codepoint-neg-0",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a2d302c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: floating point `-0.0`, expected u64 at line 1 column 27"
+    },
+    {
+      "name": "codepoint-below-i64-min",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a2d393232333337323033363835343737353830392c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: floating point `-9.223372036854776e+18`, expected u64 at line 1 column 45"
+    },
+    {
+      "name": "codepoint-leading-zeros",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a30313032302c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid number at line 1 column 27"
+    },
+    {
+      "name": "codepoint-1e16",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a316531362c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: floating point `1e+16`, expected u64 at line 1 column 29"
+    },
+    {
+      "name": "codepoint-1e-5",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a31652d352c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: floating point `0.00001`, expected u64 at line 1 column 29"
+    },
+    {
+      "name": "codepoint-1e400",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a31653430302c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:number out of range at line 1 column 30"
+    },
+    {
+      "name": "codepoint-2e308",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a32653330382c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:number out of range at line 1 column 30"
+    },
+    {
+      "name": "codepoint-exp-overflow",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a3165323134373438333634382c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:number out of range at line 1 column 37"
+    },
+    {
+      "name": "codepoint-exp-underflow",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a31652d323134373438333634382c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: floating point `0.0`, expected u64 at line 1 column 38"
+    },
+    {
+      "name": "codepoint-fraction-overflow",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312e30303030303030303030303030303030303030303030303030303030312c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: floating point `1.0`, expected u64 at line 1 column 56"
+    },
+    {
+      "name": "codepoint-1e-400",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a31652d3430302c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: floating point `0.0`, expected u64 at line 1 column 31"
+    },
+    {
+      "name": "codepoint-0e400",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a30653430302c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: floating point `0.0`, expected u64 at line 1 column 30"
+    },
+    {
+      "name": "codepoint-dot-only",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a352e2c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid number at line 1 column 28"
+    },
+    {
+      "name": "codepoint-e-only",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a35652c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid number at line 1 column 28"
+    },
+    {
+      "name": "codepoint-string",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a2235222c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: string \"5\", expected u64 at line 1 column 28"
+    },
+    {
+      "name": "codepoint-string-unicode",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a225c75303065395c75303330315c6e5c745c725c75303030305c22785c5c205c7530303037205c75643833645c7564653030205c7530306164222c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: string \"\u00e9\\u{301}\\n\\t\\r\\0\\\"x\\\\ \\u{7} \ud83d\ude00 \\u{ad}\", expected u64 at line 1 column 83"
+    },
+    {
+      "name": "codepoint-true",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a747275652c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: boolean `true`, expected u64 at line 1 column 29"
+    },
+    {
+      "name": "codepoint-object",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a7b7d2c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: map, expected u64 at line 1 column 25"
+    },
+    {
+      "name": "codepoint-array",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a5b5d2c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid type: sequence, expected u64 at line 1 column 25"
+    },
+    {
+      "name": "codepoint-minus-letter",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a2d782c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:invalid number at line 1 column 27"
+    },
+    {
+      "name": "codepoint-eof-after-dot",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a352e",
+      "expect": "throw:Json:EOF while parsing a value at line 1 column 27"
+    },
+    {
+      "name": "codepoint-minus-eof",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a2d",
+      "expect": "throw:Json:EOF while parsing a value at line 1 column 26"
+    },
+    {
+      "name": "type-int",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a2261222c2274797065223a357d5d7d",
+      "expect": "throw:Json:invalid type: integer `5`, expected a string at line 1 column 46"
+    },
+    {
+      "name": "uri-int",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a2261222c22757269223a377d5d7d",
+      "expect": "throw:Json:invalid type: integer `7`, expected a string at line 1 column 45"
+    },
+    {
+      "name": "type-false",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a2261222c2274797065223a66616c73657d5d7d",
+      "expect": "throw:Json:invalid type: boolean `false`, expected a string at line 1 column 50"
+    },
+    {
+      "name": "description-neg",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a2261222c226465736372697074696f6e223a2d317d5d7d",
+      "expect": "throw:Json:invalid type: integer `-1`, expected a string at line 1 column 54"
+    },
+    {
+      "name": "entries-object",
+      "hex": "7b22656e7472696573223a207b7d7d",
+      "expect": "throw:Json:invalid type: map, expected a sequence at line 1 column 12"
+    },
+    {
+      "name": "entries-null",
+      "hex": "7b22656e7472696573223a6e756c6c7d",
+      "expect": "throw:Json:invalid type: null, expected a sequence at line 1 column 15"
+    },
+    {
+      "name": "entries-null-element",
+      "hex": "7b22656e7472696573223a5b6e756c6c5d7d",
+      "expect": "throw:Json:invalid type: null, expected struct RegistryEntry at line 1 column 16"
+    },
+    {
+      "name": "entries-int-element",
+      "hex": "7b22656e7472696573223a5b355d7d",
+      "expect": "throw:Json:invalid type: integer `5`, expected struct RegistryEntry at line 1 column 13"
+    },
+    {
+      "name": "ontology-int",
+      "hex": "7b22656e7472696573223a5b5d2c226f6e746f6c6f6779223a357d",
+      "expect": "throw:Json:invalid type: integer `5`, expected struct OntologyInfo at line 1 column 26"
+    },
+    {
+      "name": "generated-tool-int",
+      "hex": "7b22656e7472696573223a5b5d2c2267656e657261746564223a7b22746f6f6c223a357d7d",
+      "expect": "throw:Json:invalid type: integer `5`, expected a string at line 1 column 35"
+    },
+    {
+      "name": "start-code-point-neg",
+      "hex": "7b22656e7472696573223a5b5d2c226f6e746f6c6f6779223a7b2273746172745f636f64655f706f696e74223a2d357d7d",
+      "expect": "throw:Json:invalid value: integer `-5`, expected u64 at line 1 column 47"
+    },
+    {
+      "name": "bare-number",
+      "hex": "3432",
+      "expect": "throw:Json:invalid type: integer `42`, expected struct RegistryFile at line 1 column 2"
+    },
+    {
+      "name": "empty-object",
+      "hex": "7b7d",
+      "expect": "throw:Json:missing field `entries` at line 1 column 2"
+    },
+    {
+      "name": "empty-array",
+      "hex": "5b5d",
+      "expect": "throw:Json:invalid length 0, expected struct RegistryFile with 4 elements at line 1 column 2"
+    },
+    {
+      "name": "generated-empty-array",
+      "hex": "7b22656e7472696573223a5b5d2c2267656e657261746564223a5b5d7d",
+      "expect": "throw:Json:invalid length 0, expected struct GeneratedInfo with 1 element at line 1 column 28"
+    },
+    {
+      "name": "entry-array-short",
+      "hex": "7b22656e7472696573223a5b5b312c2261225d5d7d",
+      "expect": "throw:Json:invalid length 2, expected struct RegistryEntry with 5 elements at line 1 column 19"
+    },
+    {
+      "name": "entry-array-extra",
+      "hex": "7b22656e7472696573223a5b5b312c2261222c6e756c6c2c6e756c6c2c6e756c6c2c375d5d7d",
+      "expect": "throw:Json:trailing characters at line 1 column 35"
+    },
+    {
+      "name": "dup-codepoint",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a313030322c22636f6465706f696e74223a322c226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:duplicate field `codepoint` at line 1 column 41"
+    },
+    {
+      "name": "dup-entries",
+      "hex": "7b22656e7472696573223a5b5d2c22656e7472696573223a5b5d7d",
+      "expect": "throw:Json:duplicate field `entries` at line 1 column 23"
+    },
+    {
+      "name": "missing-entries",
+      "hex": "7b226f6e746f6c6f6779223a7b226e616d65223a2278227d7d",
+      "expect": "throw:Json:missing field `entries` at line 1 column 25"
+    },
+    {
+      "name": "missing-name",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a317d5d7d",
+      "expect": "throw:Json:missing field `name` at line 1 column 27"
+    },
+    {
+      "name": "missing-codepoint",
+      "hex": "7b22656e7472696573223a5b7b226e616d65223a2261227d5d7d",
+      "expect": "throw:Json:missing field `codepoint` at line 1 column 24"
+    },
+    {
+      "name": "missing-name-comma-space",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a317d202c205d7d",
+      "expect": "throw:Json:missing field `name` at line 1 column 27"
+    },
+    {
+      "name": "lone-lead-surrogate",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a225c7564383030227d5d7d",
+      "expect": "throw:Json:unexpected end of hex escape at line 1 column 42"
+    },
+    {
+      "name": "lone-trail-surrogate",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a225c7564633030227d5d7d",
+      "expect": "throw:Json:lone leading surrogate in hex escape at line 1 column 41"
+    },
+    {
+      "name": "lead-surrogate-eof",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a225c7564383030",
+      "expect": "throw:Json:EOF while parsing a string at line 1 column 41"
+    },
+    {
+      "name": "lead-surrogate-then-escape",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a225c75643830305c6e227d5d7d",
+      "expect": "throw:Json:unexpected end of hex escape at line 1 column 43"
+    },
+    {
+      "name": "lead-surrogate-then-lead",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a225c75643830305c7564383030227d5d7d",
+      "expect": "throw:Json:lone leading surrogate in hex escape at line 1 column 47"
+    },
+    {
+      "name": "invalid-utf8",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a22ff227d5d7d",
+      "expect": "throw:Io:stream did not contain valid UTF-8"
+    },
+    {
+      "name": "control-char-in-string",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a22610962227d5d7d",
+      "expect": "throw:Json:control character (\\u0000-\\u001F) found while parsing a string at line 1 column 37"
+    },
+    {
+      "name": "invalid-escape-x",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a225c78227d5d7d",
+      "expect": "throw:Json:invalid escape at line 1 column 37"
+    },
+    {
+      "name": "short-hex-escape",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a225c753132227d5d7d",
+      "expect": "throw:Json:invalid escape at line 1 column 41"
+    },
+    {
+      "name": "short-hex-escape-eof",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a225c753132",
+      "expect": "throw:Json:EOF while parsing a string at line 1 column 39"
+    },
+    {
+      "name": "brace-escape",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a225c757b31463630307d227d5d7d",
+      "expect": "throw:Json:invalid escape at line 1 column 41"
+    },
+    {
+      "name": "unterminated-string",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a226162",
+      "expect": "throw:Json:EOF while parsing a string at line 1 column 37"
+    },
+    {
+      "name": "eof-after-backslash",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a2261625c",
+      "expect": "throw:Json:EOF while parsing a string at line 1 column 38"
+    },
+    {
+      "name": "ignored-invalid-escape",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a225c78227d",
+      "expect": "throw:Json:invalid escape at line 1 column 21"
+    },
+    {
+      "name": "ignored-control-char",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a22610962227d",
+      "expect": "throw:Json:control character (\\u0000-\\u001F) found while parsing a string at line 1 column 20"
+    },
+    {
+      "name": "ignored-unterminated-string",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a226162",
+      "expect": "throw:Json:EOF while parsing a string at line 1 column 21"
+    },
+    {
+      "name": "bom-before-object",
+      "hex": "efbbbf7b22656e7472696573223a5b5d7d",
+      "expect": "throw:Json:expected value at line 1 column 1"
+    },
+    {
+      "name": "trailing-characters",
+      "hex": "7b22656e7472696573223a5b5d7d202078",
+      "expect": "throw:Json:trailing characters at line 1 column 17"
+    },
+    {
+      "name": "empty-file",
+      "hex": "",
+      "expect": "throw:Json:EOF while parsing a value at line 1 column 0"
+    },
+    {
+      "name": "whitespace-only",
+      "hex": "20090d0a",
+      "expect": "throw:Json:EOF while parsing a value at line 2 column 0"
+    },
+    {
+      "name": "bare-word",
+      "hex": "78",
+      "expect": "throw:Json:expected value at line 1 column 1"
+    },
+    {
+      "name": "key-not-string",
+      "hex": "7b353a317d",
+      "expect": "throw:Json:key must be a string at line 1 column 2"
+    },
+    {
+      "name": "key-not-string-after-comma",
+      "hex": "7b22656e7472696573223a5b5d2c353a317d",
+      "expect": "throw:Json:key must be a string at line 1 column 15"
+    },
+    {
+      "name": "missing-colon",
+      "hex": "7b22656e747269657322205b5d7d",
+      "expect": "throw:Json:expected `:` at line 1 column 12"
+    },
+    {
+      "name": "missing-comma",
+      "hex": "7b22656e7472696573223a5b5d202278223a317d",
+      "expect": "throw:Json:expected `,` or `}` at line 1 column 15"
+    },
+    {
+      "name": "array-missing-comma",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a2261227d207b7d5d7d",
+      "expect": "throw:Json:expected `,` or `]` at line 1 column 40"
+    },
+    {
+      "name": "unterminated-object",
+      "hex": "7b22656e7472696573223a5b5d",
+      "expect": "throw:Json:EOF while parsing an object at line 1 column 13"
+    },
+    {
+      "name": "unterminated-array",
+      "hex": "7b22656e7472696573223a5b",
+      "expect": "throw:Json:EOF while parsing a list at line 1 column 12"
+    },
+    {
+      "name": "eof-after-comma",
+      "hex": "7b22656e7472696573223a5b5d2c",
+      "expect": "throw:Json:EOF while parsing a value at line 1 column 14"
+    },
+    {
+      "name": "trailing-comma-object",
+      "hex": "7b22656e7472696573223a5b5d2c7d",
+      "expect": "throw:Json:trailing comma at line 1 column 15"
+    },
+    {
+      "name": "trailing-comma-array",
+      "hex": "7b22656e7472696573223a5b5d2c2273746174697374696373223a5b312c5d7d",
+      "expect": "throw:Json:trailing comma at line 1 column 31"
+    },
+    {
+      "name": "ident-error",
+      "hex": "7b22656e7472696573223a5b5d2c226f6e746f6c6f6779223a6e756c787d",
+      "expect": "throw:Json:expected ident at line 1 column 29"
+    },
+    {
+      "name": "ident-eof",
+      "hex": "7b22656e7472696573223a5b5d2c226f6e746f6c6f6779223a6e75",
+      "expect": "throw:Json:EOF while parsing a value at line 1 column 27"
+    },
+    {
+      "name": "eof-after-key",
+      "hex": "7b22656e747269657322",
+      "expect": "throw:Json:EOF while parsing an object at line 1 column 10"
+    },
+    {
+      "name": "array-eof-after-comma",
+      "hex": "7b22656e7472696573223a5b7b22636f6465706f696e74223a312c226e616d65223a2261227d2c",
+      "expect": "throw:Json:EOF while parsing a value at line 1 column 39"
+    },
+    {
+      "name": "statistics-bad-value",
+      "hex": "7b22656e7472696573223a5b5d2c2273746174697374696373223a3f7d",
+      "expect": "throw:Json:expected value at line 1 column 28"
+    },
+    {
+      "name": "statistics-number-eof",
+      "hex": "7b22656e7472696573223a5b5d2c2273746174697374696373223a312e35",
+      "expect": "throw:Json:EOF while parsing an object at line 1 column 30"
+    },
+    {
+      "name": "statistics-exponent-eof",
+      "hex": "7b22656e7472696573223a5b5d2c2273746174697374696373223a3165",
+      "expect": "throw:Json:EOF while parsing a value at line 1 column 29"
+    },
+    {
+      "name": "ignored-eof-after-comma",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a7b2261223a312c",
+      "expect": "throw:Json:EOF while parsing an object at line 1 column 25"
+    },
+    {
+      "name": "ignored-minus-eof",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a2d",
+      "expect": "throw:Json:invalid number at line 1 column 19"
+    },
+    {
+      "name": "crlf-error-line-3",
+      "hex": "7b0d0a202022656e7472696573223a205b0d0a202020207b22636f6465706f696e74223a20312c20226e616d65223a20357d0d0a20205d0d0a7d",
+      "expect": "throw:Json:invalid type: integer `5`, expected a string at line 3 column 30"
+    },
+    {
+      "name": "statistics-depth-127",
+      "hex": "7b22656e7472696573223a5b5d2c2273746174697374696373223a5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d7d",
+      "expect": "throw:Json:recursion limit exceeded at line 1 column 154"
+    },
+    {
+      "name": "statistics-depth-129",
+      "hex": "7b22656e7472696573223a5b5d2c2273746174697374696373223a5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d7d",
+      "expect": "throw:Json:recursion limit exceeded at line 1 column 154"
+    },
+    {
+      "name": "statistics-out-of-range",
+      "hex": "7b22656e7472696573223a5b5d2c2273746174697374696373223a5b2d31653430305d7d",
+      "expect": "throw:Json:number out of range at line 1 column 34"
+    },
+    {
+      "name": "statistics-bad-ident",
+      "hex": "7b22656e7472696573223a5b5d2c2273746174697374696373223a7b2261223a7472757d7d",
+      "expect": "throw:Json:expected ident at line 1 column 36"
+    },
+    {
+      "name": "statistics-key-not-string",
+      "hex": "7b22656e7472696573223a5b5d2c2273746174697374696373223a7b313a327d7d",
+      "expect": "throw:Json:key must be a string at line 1 column 29"
+    },
+    {
+      "name": "ignored-bad-number",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a2d787d",
+      "expect": "throw:Json:invalid number at line 1 column 20"
+    },
+    {
+      "name": "ignored-leading-zero",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a30317d",
+      "expect": "throw:Json:invalid number at line 1 column 20"
+    },
+    {
+      "name": "ignored-dot-only",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a312e7d",
+      "expect": "throw:Json:invalid number at line 1 column 21"
+    },
+    {
+      "name": "ignored-e-only",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a31657d",
+      "expect": "throw:Json:invalid number at line 1 column 21"
+    },
+    {
+      "name": "ignored-missing-colon",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a7b22612220317d7d",
+      "expect": "throw:Json:expected `:` at line 1 column 24"
+    },
+    {
+      "name": "ignored-key-not-string",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a7b313a327d7d",
+      "expect": "throw:Json:key must be a string at line 1 column 20"
+    },
+    {
+      "name": "ignored-missing-comma",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a5b3120325d7d",
+      "expect": "throw:Json:expected `,` or `]` at line 1 column 22"
+    },
+    {
+      "name": "ignored-object-missing-comma",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a7b2261223a31202262223a327d7d",
+      "expect": "throw:Json:expected `,` or `}` at line 1 column 26"
+    },
+    {
+      "name": "ignored-unterminated-array",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a5b31",
+      "expect": "throw:Json:EOF while parsing a list at line 1 column 20"
+    },
+    {
+      "name": "ignored-unterminated-object",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a7b2261223a31",
+      "expect": "throw:Json:EOF while parsing an object at line 1 column 24"
+    },
+    {
+      "name": "ignored-eof-in-key",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a7b",
+      "expect": "throw:Json:EOF while parsing an object at line 1 column 19"
+    },
+    {
+      "name": "ignored-eof-before-colon",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a7b226122",
+      "expect": "throw:Json:EOF while parsing an object at line 1 column 22"
+    },
+    {
+      "name": "ignored-bad-value",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a3f7d",
+      "expect": "throw:Json:expected value at line 1 column 19"
+    },
+    {
+      "name": "ignored-eof-value",
+      "hex": "7b22656e7472696573223a5b5d2c2278223a",
+      "expect": "throw:Json:EOF while parsing a value at line 1 column 18"
+    }
+  ]
+}

@@ -109,48 +109,72 @@ exports[`golden: constants > every exported KnownValue constant, sorted by value
 ]
 `;
 
-exports[`golden: freeze additions > B1: constants and tables are mutable 1`] = `
+exports[`golden: decode table > values and rejections 1`] = `
+[
+  "01: throw CborError: the decoded CBOR value was not the expected type",
+  "d99c4020: 18446744073709551615",
+  "d99c403bffffffffffffffff: 0",
+  "d99c4161: throw CborError: early end of CBOR data",
+  "d8640c: throw CborError: expected CBOR tag 40000, but got 100",
+  "d99c41: throw CborError: early end of CBOR data",
+  "d99c4001ff: throw CborError: the decoded CBOR had 1 extra bytes at the end",
+  "d99c40c24100: throw CborError: the decoded CBOR value was not the expected type",
+  "d99c40fa4f000001: 2147483904",
+  "d99c40fa4f000000: throw CborError: a CBOR numeric value was encoded in non-canonical form",
+]
+`;
+
+exports[`golden: pinned behaviours > constants and tables are frozen 1`] = `
 [
   "isFrozen(IS_A): true",
   "isFrozen(every constant): true",
   "isFrozen(REGISTRY_CONSTANTS): true",
   "isFrozen(KNOWN_VALUE_CODEPOINTS): true",
   "isFrozen(BUNDLED_REGISTRY): true",
-  "isFrozen(BUNDLED_REGISTRY[0]): false",
-  "mutate BODY._assignedName: throw:TypeError:Cannot assign to read only property '_assignedName' of object '[object",
+  "isFrozen(BUNDLED_REGISTRY[0]): true",
+  "isFrozen(every bundled row): true",
+  "mutate BODY._assignedName: throw:TypeError:Cannot assign to read only property '_assignedName' of object '[object Object]'",
   "store.byValue(100).name: ok:body",
   "store.byName("body"): ok:body",
 ]
 `;
 
-exports[`golden: freeze additions > B2/B4/B5: the unit name, the test artefact, the missing codepoint 1`] = `
+exports[`golden: pinned behaviours > the JS input domain 1`] = `
 [
-  "new KnownValuesStore([UNIT]).byName(""): ok:0",
-  "global byName(""): ok:0",
-  "resolveKnownValue(200000).name: ok:200000",
-  "constants not in BUNDLED_REGISTRY: []",
-  "global byValue(100) === BODY: false",
-  "global byValue(1) === IS_A: false",
+  "new KnownValue(1.5): throw:KnownValuesError:InvalidParameter:value must be an integer in [0, 9007199254740991] or a bigint in [0, 18446744073709551615]",
+  "new KnownValue(NaN): throw:KnownValuesError:InvalidParameter:value must be an integer in [0, 9007199254740991] or a bigint in [0, 18446744073709551615]",
+  "new KnownValue(Infinity): throw:KnownValuesError:InvalidParameter:value must be an integer in [0, 9007199254740991] or a bigint in [0, 18446744073709551615]",
+  "new KnownValue(null): throw:KnownValuesError:InvalidParameter:value must be an integer in [0, 9007199254740991] or a bigint in [0, 18446744073709551615]",
+  "new KnownValue(undefined): throw:KnownValuesError:InvalidParameter:value must be an integer in [0, 9007199254740991] or a bigint in [0, 18446744073709551615]",
+  "new KnownValue("1"): throw:KnownValuesError:InvalidParameter:value must be an integer in [0, 9007199254740991] or a bigint in [0, 18446744073709551615]",
+  "new KnownValue(true): throw:KnownValuesError:InvalidParameter:value must be an integer in [0, 9007199254740991] or a bigint in [0, 18446744073709551615]",
+  "new KnownValue(1, 5).name: throw:KnownValuesError:InvalidParameter:name must be a string, got number",
+  "new KnownValue(2 ** 53 - 1).valueBigInt: ok:9007199254740991",
+  "new KnownValue(2 ** 53 + 2): throw:KnownValuesError:InvalidParameter:value must be an integer in [0, 9007199254740991] or a bigint in [0, 18446744073709551615]",
+  "new KnownValue(2n ** 53n + 1n).valueBigInt: ok:9007199254740993",
+  "new KnownValue(-1): throw:KnownValuesError:InvalidParameter:value must be an integer in [0, 9007199254740991] or a bigint in [0, 18446744073709551615]",
+  "new KnownValue(2n ** 64n): throw:KnownValuesError:InvalidParameter:value must be an integer in [0, 9007199254740991] or a bigint in [0, 18446744073709551615]",
+  "store.byValue(1.5): throw:KnownValuesError:InvalidParameter:value must be an integer in [0, 9007199254740991] or a bigint in [0, 18446744073709551615]",
+  "store.byValue(-1): throw:KnownValuesError:InvalidParameter:value must be an integer in [0, 9007199254740991] or a bigint in [0, 18446744073709551615]",
+  "store.byValue("1"): throw:KnownValuesError:InvalidParameter:value must be an integer in [0, 9007199254740991] or a bigint in [0, 18446744073709551615]",
+  "store.byName(5): throw:KnownValuesError:InvalidParameter:assignedName must be a string, got number",
+  "store.register({}): throw:KnownValuesError:InvalidParameter:knownValue must be a KnownValue, got Object",
+  "resolveKnownValue(1.5, undefined): throw:KnownValuesError:InvalidParameter:value must be an integer in [0, 9007199254740991] or a bigint in [0, 18446744073709551615]",
+  "new DirectoryConfig("a"): throw:KnownValuesError:InvalidParameter:paths must be an array of strings, got "a"",
 ]
 `;
 
-exports[`golden: freeze additions > the JS input domain 1`] = `
+exports[`golden: pinned behaviours > the unit name, the bundled rows, the seeded constant identity 1`] = `
 [
-  "new KnownValue(1.5): throw:RangeError:KnownValue must be an unsigned 64-bit integer, got 1.5",
-  "new KnownValue(NaN): throw:RangeError:KnownValue must be an unsigned 64-bit integer, got NaN",
-  "new KnownValue(Infinity): throw:RangeError:KnownValue must be an unsigned 64-bit integer, got Infinity",
-  "new KnownValue(null): throw:RangeError:KnownValue must be an unsigned 64-bit integer, got null",
-  "new KnownValue(undefined): throw:RangeError:KnownValue must be an unsigned 64-bit integer, got undefined",
-  "new KnownValue("1"): throw:RangeError:KnownValue must be an unsigned 64-bit integer, got "1"",
-  "new KnownValue(true): throw:RangeError:KnownValue must be an unsigned 64-bit integer, got true",
-  "new KnownValue(1, 5).name: throw:RangeError:KnownValue name must be a string, got number",
-  "new KnownValue(2 ** 53 + 2).valueBigInt: ok:9007199254740994",
-  "new KnownValue(-1): throw:RangeError:KnownValue must be an unsigned 64-bit integer, got -1",
-  "new KnownValue(2n ** 64n): throw:RangeError:KnownValue must be an unsigned 64-bit integer, got 1844674407370955161",
-  "store.byValue(1.5): throw:RangeError:KnownValue must be an unsigned 64-bit integer, got 1.5",
-  "store.byValue(-1): throw:RangeError:KnownValue must be an unsigned 64-bit integer, got -1",
-  "store.byValue("1"): throw:RangeError:KnownValue must be an unsigned 64-bit integer, got "1"",
-  "resolveKnownValue(1.5): throw:RangeError:KnownValue must be an unsigned 64-bit integer, got 1.5",
+  "new KnownValuesStore([UNIT]).byName(""): ok:0",
+  "global byName(""): ok:0",
+  "resolveKnownValue(200000, global).name: ok:200000",
+  "resolveKnownValue(25, undefined).name: ok:25",
+  "constants not in BUNDLED_REGISTRY: []",
+  "constants not in the global store: ["25:value","706:Self"]",
+  "global byValue(100) === BODY: true",
+  "global byValue(1) === IS_A: true",
+  "IS_A.equals(lookalike): false",
 ]
 `;
 
@@ -181,7 +205,7 @@ exports[`golden: registry > names for 0..120 1`] = `
   "22: validUntil",
   "23: position",
   "24: nickname",
-  "25: value",
+  "25: -",
   "26: attestation",
   "27: verifiableAt",
   "28: -",
@@ -277,17 +301,5 @@ exports[`golden: registry > names for 0..120 1`] = `
   "118: -",
   "119: -",
   "120: -",
-]
-`;
-
-exports[`golden: rejections > decode table 1`] = `
-[
-  "01: throw CborError: the decoded CBOR value was not the expected type",
-  "d99c4020: throw CborError: the decoded CBOR value was not the expected type",
-  "d99c4161: throw CborError: early end of CBOR data",
-  "d8640c: throw CborError: expected CBOR tag 40000, but got 100",
-  "d99c41: throw CborError: early end of CBOR data",
-  "d99c4001ff: throw CborError: the decoded CBOR had 1 extra bytes at the end",
-  "d99c40c24100: throw CborError: the decoded CBOR value was not the expected type",
 ]
 `;

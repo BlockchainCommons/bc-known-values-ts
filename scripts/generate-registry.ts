@@ -41,12 +41,19 @@ ${sources.map((s) => ` *   ${s}`).join("\n")}
  * Skipped: ${[...SKIP].join(", ")} (see the generator).
  */
 
+/** Freezes every row and the table. */
+function freezeRows(rows: [number, string][]): readonly (readonly [number, string])[] {
+  for (const row of rows) Object.freeze(row);
+  return Object.freeze(rows);
+}
+
 /**
- * \`[codepoint, name]\` rows of the bundled registries, in load order. The
- * array is frozen; the store copies the values out, so the rows stay plain
- * tuples.
+ * \`[codepoint, name]\` rows of the bundled registries, in load order: the
+ * Research registry files as a frozen table of frozen rows, for hosts that
+ * cannot read a directory. Not registered by default; register it to get the
+ * names a reference build reads from its registry directory.
  */
-export const BUNDLED_REGISTRY: readonly (readonly [number, string])[] = /*#__PURE__*/ Object.freeze([
+export const BUNDLED_REGISTRY: readonly (readonly [number, string])[] = /*#__PURE__*/ freezeRows([
 ${body}
 ]);
 `;

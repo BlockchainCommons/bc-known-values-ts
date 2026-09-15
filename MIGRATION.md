@@ -1,6 +1,6 @@
 # Migrating from `@bcts/known-values` to `@blockchaincommons/known-values`
 
-`@blockchaincommons/known-values` is the redesigned successor to `@bcts/known-values`.
+`@blockchaincommons/known-values` is the successor to `@bcts/known-values`.
 
 ## TL;DR checklist
 
@@ -26,8 +26,8 @@
 
 ## 2. Version numbering restarts
 
-`@bcts/known-values` versions moved in lockstep with every other package in the
-monorepo, which is why it reached `1.0.0-beta.6`. Each extracted package now
+`@bcts/known-values` versions moved in lockstep with every other `@bcts`
+package, which is why it reached `1.0.0-beta.6`. Each extracted package now
 versions independently and starts again at `1.0.0-beta.1`. A lower version
 number here does **not** mean older code.
 
@@ -46,30 +46,65 @@ module-level singletons across entry points. Use the ESM entry (`import`) or the
 CJS entry (`require`); both are declared in `exports` and validated in CI by
 `publint` and `@arethetypeswrong/cli`.
 
-## 5. Peer packages renamed too
+---
 
-Every sibling library moved from the `@bcts` scope to `@blockchaincommons`. If
-you depend on more than one, rename them together so a single copy of each
-shared type is resolved:
+# Migrating to 1.0.0-beta.3
 
-| Old | New |
+- **The global registry is the reference's.** It starts from the 102
+  constants the reference seeds (`VALUE` and `SELF` are exported with their
+  names but not seeded) and then loads the `*.json` registry files of
+  `~/.known-values`, exactly as `KNOWN_VALUES` does with the crate's default
+  `directory-loading` feature. The bundled vocabularies are no longer
+  registered: `byName("schema:Thing")`, `byName("value")` and
+  `byName("Self")` are `undefined` by default. Call
+  `setDirectoryConfig(new DirectoryConfig())` before the first use for a
+  machine-independent registry (a reference build without the feature), or
+  register `BUNDLED_REGISTRY` into a store of your own.
+- **`resolveKnownValue(value, store)`** takes the store as a required second
+  argument; `undefined` is the reference's `None` and yields an unnamed
+  value. Pass `getGlobalKnownValuesStore()` for the old behaviour.
+- **`KnownValuesError`** replaces `RangeError` for every argument fault
+  (`InvalidParameter`), and carries the loader's `Io`, `Json` and
+  `AlreadyInitialized` codes with the reference's texts.
+- **Unsafe numbers are refused**: `new KnownValue(2 ** 53 + 2)` throws where
+  it used to round; pass a `bigint`. `store.register`, the store constructor,
+  `nameOf`, `assignedNameOf` require a `KnownValue` and `byName` a string;
+  `equals` returns `false` for anything else (and `true` across module
+  copies).
+- **Negative content inside tag 40000 decodes**, wrapping to `2^64 + n` as
+  the reference's `u64::try_from`; a port of `KnownValue::from(x as i32)`
+  is `new KnownValue(BigInt.asUintN(64, BigInt(x)))`.
+- `cborTags()` and the `WrongTag` message name the tag as the global dcbor
+  tags store does at call time (`40000` before `registerTags()`,
+  `known-value` after).
+- One global registry and one directory configuration per process across the
+  ESM and CommonJS builds.
+- **New:** `DirectoryConfig`, `setDirectoryConfig`, `addSearchPaths`,
+  `loadFromDirectory`, `loadFromConfig`, `store.loadFromDirectory`,
+  `store.loadFromConfig`, `parseRegistryFile` and its types,
+  `KnownValue.isKnownValue`, `KnownValuesError.isKnownValuesError`.
+
+| Reference | TypeScript |
 |---|---|
-| `@bcts/dcbor` | `@blockchaincommons/dcbor` |
-| `@bcts/<name>` | `@blockchaincommons/<name>` |
-
-## 6. What did not change
-
-- The public API: every exported name, signature and type is identical.
-- The wire format. Encodings produced by `@bcts/known-values` decode here, and the reverse.
-- Parity with the Rust reference implementation. See [`RUST_DIVERGENCES.md`](./RUST_DIVERGENCES.md).
+| `KnownValue::new`, `new_with_name`, `From<u64>`, `From<usize>` | `new KnownValue(value, name?)`, `KnownValue.from` |
+| `From<i32>` (wraps) | `new KnownValue(BigInt.asUintN(64, BigInt(x)))` |
+| `known_value_for_raw_value(raw, store)` | `resolveKnownValue(value, store)` (`undefined` is `None`) |
+| `known_value_for_name(name, store)` | `store?.byName(name)` |
+| `name_for_known_value(kv, store)` | `store?.nameOf(kv) ?? kv.name` |
+| `DirectoryConfig::{new, default_only, with_paths, with_paths_and_default, default_directory, paths, add_path}` | `new DirectoryConfig(paths?)`, `DirectoryConfig.defaultOnly()`, `withPathsAndDefault`, `defaultDirectory()`, `paths`, `addPath` |
+| `set_directory_config`, `add_search_paths`, `load_from_directory`, `load_from_config` | `setDirectoryConfig`, `addSearchPaths`, `loadFromDirectory`, `loadFromConfig` |
+| `LoadResult { values, files_processed, errors }` | `{ values, filesProcessed, errors }` (`values.size`, `values.values()`, `errors.length > 0`) |
+| `serde_json::from_str::<RegistryFile>` | `parseRegistryFile(text)` (camelCase fields, `bigint` codepoints) |
+| `LoadError::Io` / `Json`, `ConfigError::AlreadyInitialized` | `KnownValuesError` `Io` / `Json` / `AlreadyInitialized` |
+| `default-features = false` | `setDirectoryConfig(new DirectoryConfig())` before first access |
 
 ---
 
-# Migrating to the redesigned API
+# Migrating to the 1.0.0-beta.1 API
 
-`1.0.0-beta.1` also redesigns the TypeScript surface. **Every wire byte is
+`1.0.0-beta.1` also reshapes the TypeScript surface. **Every wire byte is
 unchanged**: tagged CBOR, digests and the registry names are verified against
-a frozen pre-redesign baseline and against `known-values-rust` 0.15.5 by
+a frozen `@bcts/known-values` baseline and against `known-values-rust` 0.15.5 by
 `tests/rust-validation`.
 
 Validating against the reference then changed what the package *accepts and
@@ -78,7 +113,7 @@ holds*, not its names:
 - Every `KnownValue`, `REGISTRY_CONSTANTS`, `KNOWN_VALUE_CODEPOINTS` and
   `BUNDLED_REGISTRY` are **frozen**; assigning to a constant throws
   `TypeError` in strict mode where it silently renamed a wire predicate.
-- **Argument faults are one `RangeError`** with the package's message:
+- **Argument faults are one error** (`KnownValuesError` since 1.0.0-beta.3) with the package's message:
   `new KnownValue(1.5 | NaN | null | undefined | "1" | true)`,
   `store.byValue(…)` and `resolveKnownValue(…)` with the same inputs, and a
   non-string assigned name. `"1"` and `true` were accepted before;
@@ -86,7 +121,7 @@ holds*, not its names:
 - **`byName("")` answers the unit value** (codepoint 0), as the reference
   does; it returned `undefined`.
 - **`200000 testWorkflowEntry`** (the Research repo's workflow test row) is
-  no longer bundled: `resolveKnownValue(200000).name` is `"200000"`.
+  no longer bundled: `resolveKnownValue(200000, store).name` is `"200000"`.
 - **`100 body`** is in the bundled table, so `byValue(100)` returns the
   registry's object like every other codepoint (it returned the `BODY`
   constant itself).
@@ -106,7 +141,7 @@ holds*, not its names:
 | `store.insert(kv)` | `store.register(kv)` |
 | `store.knownValueForValue(v)`, `store.knownValueNamed(n)` | `store.byValue(v)`, `store.byName(n)` |
 | `store.assignedName(kv)`, `store.name(kv)` | `store.assignedNameOf(kv)`, `store.nameOf(kv)` |
-| `KnownValuesStore.knownValueForRawValue(v, store?)` | `resolveKnownValue(v, store?)` (global store by default) |
+| `KnownValuesStore.knownValueForRawValue(v, store?)` | `resolveKnownValue(v, store)` |
 | `KnownValuesStore.knownValueForName(n, store?)` | `store?.byName(n)` |
 | `KnownValuesStore.nameForKnownValue(kv, store?)` | `store?.nameOf(kv) ?? kv.name` |
 | `KNOWN_VALUES.get()`, `LazyKnownValues` | `getGlobalKnownValuesStore()`, `withKnownValues(fn)` |
@@ -115,7 +150,6 @@ holds*, not its names:
 | `KNOWN_VALUE_TAG` | `TAG_KNOWN_VALUE` from `@blockchaincommons/tags` |
 
 New: `KnownValue.from(v, name?)`, `store.size`, `store.values()`, `for (const kv of store)`,
-`REGISTRY_CONSTANTS`. The store also gains a second-argument-free
-`resolveKnownValue`. The JSON registries are no longer imported at runtime
+`REGISTRY_CONSTANTS`. The JSON registries are no longer imported at runtime
 (no `resolveJsonModule` needed); `scripts/generate-registry.ts` regenerates
 `src/registry.generated.ts` from them.

@@ -12,87 +12,94 @@ import {
   type Tag,
   type ToCbor,
   cbor,
-  expectTaggedContent,
   expectUnsigned,
+  extractTaggedContent,
   taggedValue,
+  tagsForValues,
+  validateTag,
 } from "@blockchaincommons/dcbor";
 import { TAG_KNOWN_VALUE } from "@blockchaincommons/tags";
 import { Digest, type DigestProvider } from "@blockchaincommons/components";
+import { KnownValuesError } from "./error.js";
 
 /** What a known value can be built from. */
 export type KnownValueInput = number | bigint;
 
-/** The one domain check: an integer `number`, or a `bigint`, in `0 ..= 2⁶⁴ − 1`. */
+const U64_MAX = 0xffffffffffffffffn;
+
+/**
+ * The one domain check: a `bigint` in `0 ..= 2⁶⁴ − 1`, or a non-negative
+ * safe integer `number`. A `number` above `Number.MAX_SAFE_INTEGER` is
+ * refused rather than rounded: the codepoint is the wire value.
+ *
+ * @throws KnownValuesError `InvalidParameter` otherwise
+ */
 export function toBigInt(value: KnownValueInput): bigint {
-  let v: bigint;
   if (typeof value === "bigint") {
-    v = value;
-  } else if (typeof value === "number" && Number.isInteger(value)) {
-    v = BigInt(value);
-  } else {
-    throw new RangeError(`KnownValue must be an unsigned 64-bit integer, got ${describe(value)}`);
+    if (value >= 0n && value <= U64_MAX) return value;
+  } else if (typeof value === "number" && Number.isSafeInteger(value) && value >= 0) {
+    return BigInt(value);
   }
-  if (v < 0n || v > 0xffffffffffffffffn) {
-    throw new RangeError(`KnownValue must be an unsigned 64-bit integer, got ${v}`);
-  }
-  return v;
+  throw KnownValuesError.invalidParameter("value", value);
 }
 
-/** A short rendering of a rejected codepoint for the error message. */
-function describe(value: unknown): string {
-  if (typeof value === "string") return JSON.stringify(value);
-  if (typeof value === "number" || typeof value === "boolean" || value === null)
-    return String(value);
-  return typeof value;
-}
+/**
+ * The brand every `KnownValue` carries, whichever copy of this module built
+ * it (the ESM and CommonJS builds, or two bundled copies, in one process).
+ */
+const BRAND: unique symbol = Symbol.for("@blockchaincommons/known-values/type") as never;
 
 let CODEC: CborCodec<KnownValue> | undefined;
-const CBOR_TAGS: readonly Tag[] = /*#__PURE__*/ Object.freeze([TAG_KNOWN_VALUE]);
 
 /**
  * A known value: a codepoint (an unsigned 64-bit integer) with, optionally,
  * the name a registry assigns it.
  *
- * **Equality is by codepoint** (`equals`), whatever the names; `===` is not
- * meaningful — the global registry hands out the object it built from the
- * bundled table, not the exported constant, so
- * `getGlobalKnownValuesStore().byValue(1) === IS_A` is `false` while
- * `.equals(IS_A)` is `true`. Instances are frozen (a constant cannot be
- * renamed process-wide) and every constructor argument is checked: the
- * codepoint must be an integer `number` or a `bigint` in
- * `0 ..= 2⁶⁴ − 1` (use `bigint` for exact codepoints above the safe number range), the name a `string`.
- *
- * Two module graphs (CommonJS and ESM in one process) each have their own
- * class and their own global registry: `instanceof` across them is `false`,
- * `equals` still holds.
+ * **Equality is by codepoint** (`equals`), whatever the names, and across
+ * module copies. Compare with `equals`: `===` may hold for the constants the
+ * global registry is seeded with but is not guaranteed, because directory
+ * entries and registrations replace the registered objects. Instances are
+ * frozen (a constant cannot be renamed process-wide) and every constructor
+ * argument is checked: the codepoint must be a non-negative safe integer
+ * `number` or a `bigint` in `0 ..= 2⁶⁴ − 1` (use `bigint` for exact
+ * codepoints above the safe number range), the name a `string`.
  */
 export class KnownValue implements ToCbor, CborTagged, DigestProvider {
   private readonly _value: bigint;
   private readonly _assignedName: string | undefined;
-
   /**
    * @param value - The codepoint (an unsigned 64-bit integer)
    * @param assignedName - The name the registry gives it, if any
-   * @throws RangeError when `value` is not an integer `number` or a `bigint` in `0 ..= 2⁶⁴ − 1`, or `assignedName` is not a string
+   * @throws KnownValuesError `InvalidParameter` when `value` is not a non-negative safe
+   *   integer `number` or a `bigint` in `0 ..= 2⁶⁴ − 1`, or `assignedName` is not a string
    */
   constructor(value: KnownValueInput, assignedName?: string) {
     this._value = toBigInt(value);
     if (assignedName !== undefined && typeof assignedName !== "string") {
-      throw new RangeError(`KnownValue name must be a string, got ${typeof assignedName}`);
+      throw KnownValuesError.invalidParameter("name", assignedName);
     }
     this._assignedName = assignedName;
-    // A known value has no mutable state; freezing makes that true at
-    // runtime too (a constant cannot be renamed process-wide).
+    // The cross-copy brand `isKnownValue` checks, then the freeze: a known
+    // value has no mutable state (a constant cannot be renamed process-wide).
+    Object.defineProperty(this, BRAND, { value: true });
     Object.freeze(this);
   }
 
   /**
    * The same as the constructor, for call chains.
    *
-   * @throws RangeError as the constructor does
+   * @throws KnownValuesError as the constructor does
    */
   static from(value: KnownValueInput, assignedName?: string): KnownValue {
     return new KnownValue(value, assignedName);
+  }
+
+  /**
+   * Whether `x` is a `KnownValue`, from this module copy or another: checks
+   * the brand, not `instanceof`.
+   */
+  static isKnownValue(x: unknown): x is KnownValue {
+    return typeof x === "object" && x !== null && (x as { [BRAND]?: unknown })[BRAND] === true;
   }
 
   /** The codepoint, as a `number` when it is a safe integer and a `bigint` otherwise. */
@@ -115,9 +122,13 @@ export class KnownValue implements ToCbor, CborTagged, DigestProvider {
     return this._assignedName ?? this._value.toString();
   }
 
-  /** Two known values are equal when their codepoints are, whatever their names. */
-  equals(other: KnownValue): boolean {
-    return this._value === other._value;
+  /**
+   * Two known values are equal when their codepoints are, whatever their
+   * names and whichever module copy built them; anything that is not a
+   * `KnownValue` is not equal.
+   */
+  equals(other: unknown): boolean {
+    return KnownValue.isKnownValue(other) && this._value === other.valueBigInt;
   }
 
   /** `name`. */
@@ -133,19 +144,25 @@ export class KnownValue implements ToCbor, CborTagged, DigestProvider {
   /**
    * Tagged-CBOR codec. `decode` requires `#6.40000(n)` — the tag is part of
    * the type, as in the reference's `TryFrom<CBOR>`; use `fromUntaggedCbor`
-   * for the bare unsigned integer.
+   * for the bare unsigned integer. `tags` is named from the global tags store
+   * at each access, as the reference's `cbor_tags()` is.
    */
   static get codec(): CborCodec<KnownValue> {
     return (CODEC ??= {
-      tags: [TAG_KNOWN_VALUE],
+      get tags(): Tag[] {
+        return tagsForValues([TAG_KNOWN_VALUE.value]);
+      },
       encode: (kv) => kv.toCbor(),
-      decode: (c) => KnownValue.fromUntaggedCbor(expectTaggedContent(c, TAG_KNOWN_VALUE.value)),
+      decode: (c) => {
+        validateTag(c, tagsForValues([TAG_KNOWN_VALUE.value]));
+        return KnownValue.fromUntaggedCbor(extractTaggedContent(c));
+      },
     });
   }
 
-  /** The known-value tag (40000). */
+  /** The known-value tag (40000), named as the global tags store names it at the time. */
   cborTags(): Tag[] {
-    return [...CBOR_TAGS];
+    return tagsForValues([TAG_KNOWN_VALUE.value]);
   }
 
   /** The bare unsigned integer. */
@@ -159,25 +176,29 @@ export class KnownValue implements ToCbor, CborTagged, DigestProvider {
   }
 
   /**
-   * Decode `#6.40000(n)` (the reference's `TryFrom<CBOR>`).
+   * Decode `#6.40000(n)` (the reference's `TryFrom<CBOR>`). Negative content
+   * wraps as {@link KnownValue.fromUntaggedCbor} describes.
    *
    * @throws CborError (dcbor's, with a code) — `WrongType` for an untagged value or a
-   *   non-integer content, `WrongTag` for another tag; `RangeError` never (the wire cannot
-   *   carry an out-of-range unsigned)
+   *   non-integer content, `WrongTag` for another tag (both tags named as the global
+   *   tags store names them)
    */
   static fromCbor(cborValue: Cbor): KnownValue {
     return KnownValue.codec.decode(cborValue);
   }
 
   /**
-   * Decode the bare unsigned integer `n` — the content of tag 40000 (the
-   * reference's `from_untagged_cbor`), as a tag summariser or a decoder that has
-   * already stripped the tag holds it.
+   * Decode the bare integer `n` — the content of tag 40000 (the reference's
+   * `from_untagged_cbor`), as a tag summariser or a decoder that has already
+   * stripped the tag holds it. A negative integer node wraps to `2⁶⁴ + n`,
+   * as the reference's `u64::try_from` does (dcbor's negative-to-unsigned
+   * wrap), so `40000(-1)` is the codepoint 18446744073709551615; a whole
+   * float head that dcbor turns into an integer node follows the same rule.
    *
-   * @throws CborError `WrongType` when the CBOR is not an unsigned integer (a negative,
-   *   a tagged value, a bignum)
+   * @throws CborError `WrongType` when the CBOR is not an integer (a tagged value, a
+   *   bignum, a text), `OutOfRange` for a negative below −2⁶⁴
    */
   static fromUntaggedCbor(cborValue: Cbor): KnownValue {
-    return new KnownValue(expectUnsigned(cborValue));
+    return new KnownValue(expectUnsigned(cborValue, { width: 64, wrapNegative: true }));
   }
 }

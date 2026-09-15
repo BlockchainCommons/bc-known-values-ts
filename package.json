@@ -1,6 +1,6 @@
 {
   "name": "@blockchaincommons/known-values",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "type": "module",
   "sideEffects": false,
   "description": "Blockchain Commons Known Values for TypeScript",
@@ -67,6 +67,7 @@
     "test:golden": "vitest run tests/golden-vectors.test.ts",
     "test:differential": "vitest run tests/differential.test.ts",
     "vectors:generate": "bun scripts/generate-vectors.ts",
+    "vectors:full": "bun scripts/generate-vectors.ts --full tests/rust-validation/target/corpus.json",
     "baseline:build": "bun scripts/build-baseline.ts"
   },
   "keywords": [
@@ -82,6 +83,7 @@
     "node": ">=22.12"
   },
   "devDependencies": {
+    "ajv": "^8.20.0",
     "@arethetypeswrong/cli": "^0.18.5",
     "@eslint/js": "^10.0.1",
     "@microsoft/api-extractor": "^7.59.1",
@@ -102,8 +104,8 @@
     "vitest": "^5.0.0"
   },
   "dependencies": {
-    "@blockchaincommons/components": "^1.0.0-beta.2",
-    "@blockchaincommons/dcbor": "^1.0.0-beta.1",
-    "@blockchaincommons/tags": "^1.0.0-beta.2"
+    "@blockchaincommons/components": "^1.0.0-beta.3",
+    "@blockchaincommons/dcbor": "^1.0.0-beta.3",
+    "@blockchaincommons/tags": "^1.0.0-beta.3"
   }
 }
