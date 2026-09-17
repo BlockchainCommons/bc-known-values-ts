@@ -1,6 +1,6 @@
 {
   "name": "@blockchaincommons/known-values",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "type": "module",
   "sideEffects": false,
   "description": "Blockchain Commons Known Values for TypeScript",
@@ -82,18 +82,23 @@
   "engines": {
     "node": ">=22.12"
   },
+  "dependencies": {
+    "@blockchaincommons/components": "^1.0.0-beta.4",
+    "@blockchaincommons/dcbor": "^1.0.0-beta.3",
+    "@blockchaincommons/tags": "^1.0.0-beta.3"
+  },
   "devDependencies": {
     "ajv": "^8.20.0",
     "@arethetypeswrong/cli": "^0.18.5",
     "@eslint/js": "^10.0.1",
     "@microsoft/api-extractor": "^7.59.1",
     "@size-limit/preset-small-lib": "^13.1.1",
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.6.1",
     "@typescript-eslint/eslint-plugin": "^8.70.0",
     "@typescript-eslint/parser": "^8.70.0",
-    "@vitest/coverage-v8": "^5.0.0",
+    "@vitest/coverage-v8": "^5.0.1",
     "eslint": "^10.10.0",
-    "fast-check": "^4.10.0",
+    "fast-check": "^4.10.1",
     "prettier": "3.9.6",
     "publint": "^0.3.24",
     "size-limit": "^13.1.1",
@@ -101,11 +106,6 @@
     "typedoc": "^0.28.20",
     "typescript": "^7.0.2",
     "typescript6": "npm:typescript@^6.0.3",
-    "vitest": "^5.0.0"
-  },
-  "dependencies": {
-    "@blockchaincommons/components": "^1.0.0-beta.3",
-    "@blockchaincommons/dcbor": "^1.0.0-beta.3",
-    "@blockchaincommons/tags": "^1.0.0-beta.3"
+    "vitest": "^5.0.1"
   }
 }

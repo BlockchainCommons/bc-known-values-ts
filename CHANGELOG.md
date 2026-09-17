@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.0-beta.4 - 2026-09-17
+
+- Upgrade `@blockchaincommons/components` to ^1.0.0-beta.4.
+
 ## 1.0.0-beta.3 - 2026-09-15
 
 ### Changed (breaking)
@@ -75,4 +79,4 @@ representation differences remain documented.
 
 ## 1.0.0-beta.1 - 2026-09-09
 
-Initial beta implementation.
+- Initial beta implementation.
