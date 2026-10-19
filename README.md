@@ -94,6 +94,7 @@ Runnable examples live in the [`examples/`](https://github.com/BlockchainCommons
 
 ### Version History
 
+- **1.0.0-beta.5 (October 19, 2026)** - Installs with npm on a host without Bun: the TypeScript 6 pin for the lint tools runs from `prepare`, not `postinstall` ([bc-components-ts#11](https://github.com/BlockchainCommons/bc-components-ts/issues/11)).
 - **1.0.0-beta.3 (September 15, 2026)** - Alignment with `known-values-rust` 0.15.5: the global registry is the seed plus the `~/.known-values` registry files (`DirectoryConfig`, `parseRegistryFile`), `KnownValuesError`, exact codepoints, negative tag content wraps, tag names from the tags store.
 - **1.0.0-beta.2 (September 12, 2026)** - `KnownValue.fromCbor` and the codec require tag 40000, as the reference does; `KnownValue.fromUntaggedCbor` decodes the bare integer.
 - **1.0.0-beta.1 (September 9, 2026)** - Initial beta implementation.
